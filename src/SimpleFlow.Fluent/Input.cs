@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace SimpleFlow.Fluent
 {
-    public class Input<TInput>
+    public class Input<TInput> // use Sequence<int> rather Input<int>().Sequence() to be succinct
     {
     }
 

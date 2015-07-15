@@ -22,7 +22,7 @@ namespace SimpleFlow.Tests.Fluent
                         .Join((id, name) => new User()))
                     .Join())
                 .End()
-                .Build2();
+                .BuildWorkflow();
 
             Assert.Equal(typeof (string), r.InputTypes.Single());
             Assert.Equal(typeof (IEnumerable<User>), r.OutputType);

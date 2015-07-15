@@ -16,8 +16,8 @@ namespace SimpleFlow.Tests.Core
 
             var activity = new ActivityBlock(pow);
 
-            var definition = new WorkflowDefinition("test", activity);
-            var output = await Workflow.Start<int, int>(2, definition);
+            var workflow = new Workflow<int,int>("test", activity);
+            var output = await WorkflowRunner.Run(workflow,2);
 
             Assert.Equal(4, output);
         }
@@ -33,8 +33,8 @@ namespace SimpleFlow.Tests.Core
 
             var activity = new ActivityBlock(identity);
 
-            var definition = new WorkflowDefinition("test", activity);
-            var output = await Workflow.Start<int, int>(1, definition);
+            var workflow = new Workflow<int,int>("test", activity);
+            var output = await WorkflowRunner.Run(workflow,1);
 
             Assert.Equal(1, output);
         }
@@ -49,9 +49,9 @@ namespace SimpleFlow.Tests.Core
 
             var seq = new SequenceBlock(new[] {a1, a2});
 
-            var definition = new WorkflowDefinition("test", seq);
+            var workflow = new Workflow<int,int>("test", seq);
 
-            var output = await Workflow.Start<int, int>(0, definition);
+            var output = await WorkflowRunner.Run(workflow,0);
 
             Assert.Equal(2, output);
         }
@@ -70,9 +70,9 @@ namespace SimpleFlow.Tests.Core
 
             var seq = new SequenceBlock(steps);
 
-            var definition = new WorkflowDefinition("test", seq);
+            var workflow = new Workflow<int,int>("test", seq);
 
-            var output = await Workflow.Start<int, int>(0, definition);
+            var output = await WorkflowRunner.Run(workflow,0);
 
             Assert.Equal(count, output);
         }
@@ -85,8 +85,8 @@ namespace SimpleFlow.Tests.Core
             var activity = new ActivityBlock(twice);
             var fork = new ForkBlock(activity, 2);
 
-            var definition = new WorkflowDefinition("test", fork);
-            var output = await Workflow.Start<int[], IEnumerable<int>>(new[] {1, 2, 3}, definition);
+            var workflow = new Workflow<int[], IEnumerable<int>>("test", fork);
+            var output = await WorkflowRunner.Run(workflow,new[] { 1, 2, 3 });
             //int[] would work but not recommended
 
             Assert.Equal(new[] {2, 4, 6}, output);
@@ -100,9 +100,9 @@ namespace SimpleFlow.Tests.Core
             var activity = new ActivityBlock(identity);
             var fork = new ForkBlock(activity, 1);
 
-            var definition = new WorkflowDefinition("test", fork);
+            var workflow = new Workflow<IEnumerable<int>, IEnumerable<int>>("test", fork);
             var input = Enumerable.Repeat(1, 1000).ToArray();
-            var output = await Workflow.Start<IEnumerable<int>, IEnumerable<int>>(input, definition);
+            var output = await WorkflowRunner.Run(workflow,input);
             //int[] would work but not recommended
 
             Assert.Equal(input, output);
@@ -116,11 +116,10 @@ namespace SimpleFlow.Tests.Core
             var activity = new ActivityBlock(identity);
             var fork = new ForkBlock(new ForkBlock(new ForkBlock(activity, 1), 1), 1);
 
-            var definition = new WorkflowDefinition("test", fork);
+            var workflow = new Workflow<int[][][], IEnumerable<IEnumerable<IEnumerable<int>>>>("test", fork);
             var output =
                 await
-                    Workflow.Start<int[][][], IEnumerable<IEnumerable<IEnumerable<int>>>>(new[] {new[] {new[] {1}}},
-                        definition);
+                    WorkflowRunner.Run(workflow,new[] { new[] { new[] { 1 } } });
 
             Assert.Equal(new[] {1}, output.SelectMany(_ => _).SelectMany(_ => _));
         }
@@ -132,8 +131,8 @@ namespace SimpleFlow.Tests.Core
             Func<int, int> identity = x => x;
 
             var parallel = new ParallelBlock(new[] {new ActivityBlock(stringify), new ActivityBlock(identity)}, 1);
-            var definition = new WorkflowDefinition("test", parallel);
-            var output = (await Workflow.Start<int, IEnumerable<object>>(1, definition)).ToArray();
+            var workflow = new Workflow<int, IEnumerable<object>>("test", parallel);
+            var output = (await WorkflowRunner.Run(workflow,1)).ToArray();
 
             Assert.Equal(2, output.Length);
             Assert.Equal("1", output[0]);
@@ -154,8 +153,8 @@ namespace SimpleFlow.Tests.Core
                 new ActivityBlock(sum)
             });
 
-            var definition = new WorkflowDefinition("test", root);
-            var output = await Workflow.Start<string, int>("1,2,3,4,5,6,7,8,9,10", definition);
+            var workflow = new Workflow<string, int>("test", root);
+            var output = await WorkflowRunner.Run(workflow,"1,2,3,4,5,6,7,8,9,10");
 
             Assert.Equal(55, output);
         }
@@ -174,8 +173,8 @@ namespace SimpleFlow.Tests.Core
                 new ActivityBlock(sum)
             });
 
-            var definition = new WorkflowDefinition("test", root);
-            var output = await Workflow.Start<string, int>("1,2,3,4,5,6,7,8,9,10", definition);
+            var workflow = new Workflow<string,int>("test", root);
+            var output = await WorkflowRunner.Run(workflow,"1,2,3,4,5,6,7,8,9,10");
 
             Assert.Equal(55, output);
         }
@@ -192,9 +191,9 @@ namespace SimpleFlow.Tests.Core
                 new ActivityBlock(add)
             });
 
-            var definition = new WorkflowDefinition("test", root);
+            var workflow = new Workflow<string, int>("test", root);
 
-            var output = await Workflow.Start<string, int>("1", definition);
+            var output = await WorkflowRunner.Run(workflow,"1");
 
             Assert.Equal(2, output);
         }
@@ -230,8 +229,8 @@ namespace SimpleFlow.Tests.Core
                         }), 1)
             });
 
-            var definition = new WorkflowDefinition("test", root);
-            var output = await Workflow.Start<string, IEnumerable<User>>("1,2,3", definition);
+            var workflow = new Workflow<string, IEnumerable<User>>("test", root);
+            var output = await WorkflowRunner.Run(workflow,"1,2,3");
 
             Assert.Equal(
                 new[] {new User {Id = 1, Name = "n1"}, new User {Id = 2, Name = "n2"}, new User {Id = 3, Name = "n3"}},

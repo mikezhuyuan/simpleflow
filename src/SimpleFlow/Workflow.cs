@@ -1,39 +1,20 @@
-﻿using System.Threading.Tasks;
+using System;
+using System.Threading.Tasks;
 
 namespace SimpleFlow.Core
 {
-    public static class Workflow
+    public class Workflow<TInput, TOutput>
     {
-        public static Task<TOutput> Start<TInput, TOutput>(TInput input, WorkflowDefinition definition)
+        public Workflow(string name, WorkflowBlock root)
         {
-            IDataStore dataStore = new InMemoryDataStore();
-            IWorkItemRepository workItemRepo = new InMemoryWorkItemRepository();
-            IWorkflowPathNavigator pathNavigator = new WorkflowPathNavigator(definition);
-            IActivityRunner activityRunner = new ActivityRunner(pathNavigator, dataStore, workItemRepo);
-            IWorkItemBuilder workItemBuilder = new WorkItemBuilder(pathNavigator, dataStore);
-            IStateMachineProvider stateMachineProvider = new StateMachineProvider(workItemRepo, workItemBuilder,
-                pathNavigator, dataStore);
-            IEngine engine = new Engine(workItemRepo, activityRunner, stateMachineProvider);
+            if (name == null) throw new ArgumentNullException("name");
+            if (root == null) throw new ArgumentNullException("root");
 
-            var jobId = 1; //todo: create job
-            var inputId = dataStore.Add(jobId, input, typeof (TInput));
-            var root = new WorkItem(jobId, null, 0, definition.Root.Type, pathNavigator.Path(definition.Root))
-            {
-                InputId = inputId
-            };
-
-            var rootId = workItemRepo.Add(root);
-
-            engine.Kick(root);
-
-            return engine.Completion.ContinueWith(t =>
-            {
-                if (t.IsFaulted)
-                    throw t.Exception.Flatten();
-
-                var wi = workItemRepo.Get(rootId);
-                return dataStore.Get<TOutput>(wi.OutputId.Value);
-            });
+            Name = name;
+            Root = root;
         }
+
+        public string Name { get; private set; }
+        public WorkflowBlock Root { get; private set; }
     }
 }

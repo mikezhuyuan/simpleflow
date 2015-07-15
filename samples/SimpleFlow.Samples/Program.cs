@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SimpleFlow.Core;
 using SimpleFlow.Fluent;
 
 namespace SimpleFlow.Samples
@@ -35,7 +36,7 @@ namespace SimpleFlow.Samples
                .End()
                .Build("load multiple users");
 
-            var users = await workflow.Start("1,2,3");
+            var users = await WorkflowRunner.Run(workflow,"1,2,3");
 
             foreach (var user in users)
             {
@@ -56,7 +57,7 @@ namespace SimpleFlow.Samples
                 .End()
                 .Build("count string length");
 
-            var count = await workflow.Start("abcdefgh");
+            var count = await WorkflowRunner.Run(workflow,"abcdefgh");
             Console.WriteLine(count);
         }
 
@@ -73,7 +74,7 @@ namespace SimpleFlow.Samples
                 .End()
                 .Build("x + y = ?");
 
-            var result = await workflow.Start("1+2");
+            var result = await WorkflowRunner.Run(workflow,"1+2");
             Console.WriteLine(result);
         }
 
@@ -86,7 +87,7 @@ namespace SimpleFlow.Samples
                 .End()
                 .Build("load a single user");
 
-            var user = await workflow.Start("1");
+            var user = await WorkflowRunner.Run(workflow,"1");
             Console.WriteLine(user);
         }
 

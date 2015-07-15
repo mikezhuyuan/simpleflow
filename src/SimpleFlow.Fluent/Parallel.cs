@@ -18,7 +18,7 @@ namespace SimpleFlow.Fluent
 
         internal Func<IEnumerable<WorkflowBlock>> WithBranch<TInput, TOutput>(WorkflowBuilder<TInput, TOutput> workflowBuilder)
         {
-            return () => BuildWorkflows().Union(new[] {(workflowBuilder.Build2())});
+            return () => BuildWorkflows().Union(new[] {(workflowBuilder.BuildWorkflow())});
         }
 
         internal WorkflowBuilder<TInput, TOutput> Workflow<TInput, TOutput>(Delegate method)

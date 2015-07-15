@@ -17,7 +17,7 @@ namespace SimpleFlow.Tests.Fluent
                 .ForEach(int.Parse)
                 .Join();
 
-            var r = f.Build2();
+            var r = f.BuildWorkflow();
 
             Assert.Equal(typeof (string), r.InputTypes.Single());
             Assert.Equal(typeof (IEnumerable<int>), r.OutputType);
@@ -34,7 +34,7 @@ namespace SimpleFlow.Tests.Fluent
                .ForEach(Task.FromResult)
                .Join();
 
-            var r = f.Build2();
+            var r = f.BuildWorkflow();
 
             Assert.Equal("Fork(Activity)", r.ToString());
         }
@@ -50,7 +50,7 @@ namespace SimpleFlow.Tests.Fluent
                     .Join())
                 .Join();
 
-            var r = f.Build2();
+            var r = f.BuildWorkflow();
 
             Assert.Equal("Fork(Fork(Activity))", r.ToString());
         }

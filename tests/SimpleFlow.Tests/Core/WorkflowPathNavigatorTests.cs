@@ -16,10 +16,9 @@ namespace SimpleFlow.Tests.Core
             var c1 = new SequenceBlock(new[] {a1});
             var f = new ForkBlock(a2, 1);
             var p = new ParallelBlock(new[] {a4, a5}, 1);
-            var c2 = new SequenceBlock(new WorkflowBlock[] {f, c1, a3, p});
-            var wf = new WorkflowDefinition("", c2);
+            var c2 = new SequenceBlock(new WorkflowBlock[] {f, c1, a3, p});            
 
-            var navigator = new WorkflowPathNavigator(wf);
+            var navigator = new WorkflowPathNavigator(c2);
 
             Assert.Equal("Sequence[0].Sequence[1].Activity[0]", navigator.Path(a1));
             Assert.Equal("Sequence[0].Fork[0].Activity[0]", navigator.Path(a2));

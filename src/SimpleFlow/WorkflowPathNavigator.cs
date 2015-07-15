@@ -14,15 +14,14 @@ namespace SimpleFlow.Core
         readonly IDictionary<WorkflowBlock, string> _blockToPathMap;
         readonly IDictionary<string, WorkflowBlock> _pathToBlockMap;
 
-        public WorkflowPathNavigator(WorkflowDefinition workflowDefinition)
+        public WorkflowPathNavigator(WorkflowBlock workflowBlock)
         {
-            if (workflowDefinition == null) throw new ArgumentNullException("workflowDefinition");
-            if (workflowDefinition.Root == null) throw new ArgumentNullException("workflowDefinition.Root");
+            if (workflowBlock == null) throw new ArgumentNullException("workflowBlock");
 
             _pathToBlockMap = new Dictionary<string, WorkflowBlock>();
             _blockToPathMap = new Dictionary<WorkflowBlock, string>();
 
-            Visit(workflowDefinition.Root, "", 0);
+            Visit(workflowBlock, "", 0);
         }
 
         public WorkflowBlock Find(string path)
