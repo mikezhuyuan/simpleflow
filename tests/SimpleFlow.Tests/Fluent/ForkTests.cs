@@ -12,8 +12,8 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
-            var f = FluentFlow.Input<IEnumerable<string>>()
-                .Fork(2)
+            var f = FluentFlow
+                .Fork<IEnumerable<string>>(2)
                 .ForEach(int.Parse)
                 .Join();
 
@@ -29,10 +29,10 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestAsync()
         {
-            var f = FluentFlow.Input<IEnumerable<string>>()
-               .Fork(2)
-               .ForEach(Task.FromResult)
-               .Join();
+            var f = FluentFlow
+                .Fork<IEnumerable<string>>(2)
+                .ForEach(Task.FromResult)
+                .Join();
 
             var r = f.BuildBlock();
 
@@ -42,10 +42,10 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestNested()
         {
-            var f = FluentFlow.Input<IEnumerable<IEnumerable<string>>>()
-                .Fork()
-                .ForEach(FluentFlow.Input<IEnumerable<string>>()
-                    .Fork()
+            var f = FluentFlow
+                .Fork<IEnumerable<IEnumerable<string>>>()
+                .ForEach(FluentFlow
+                    .Fork<IEnumerable<string>>()
                     .ForEach(int.Parse)
                     .Join())
                 .Join();

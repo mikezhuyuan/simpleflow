@@ -10,8 +10,8 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
-            var r = FluentFlow.Input<string>()
-                .Sequence()
+            var r = FluentFlow
+                .Sequence<string>()
                 .Then(int.Parse) //todo: first action should be Do?
                 .Then(_ => _.ToString())
                 .Then(int.Parse)
@@ -27,8 +27,8 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestAsync()
         {
-            var r = FluentFlow.Input<string>()
-                .Sequence()
+            var r = FluentFlow
+                .Sequence<string>()
                 .Then(Task.FromResult)
                 .End()
                 .BuildBlock();
@@ -39,13 +39,13 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestNested()
         {
-            var f1 = FluentFlow.Input<string>()
-                .Sequence()
+            var f1 = FluentFlow
+                .Sequence<string>()
                 .Then(int.Parse)
                 .End();
 
-            var f2 = FluentFlow.Input<string>()
-                .Sequence()
+            var f2 = FluentFlow
+                .Sequence<string>()
                 .Then(f1)
                 .End();
 

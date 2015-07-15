@@ -11,7 +11,7 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
-            var f = FluentFlow.Input<int>().Parallel(2)
+            var f = FluentFlow.Parallel<int>(2)
                 .Do(_ => _.ToString())
                 .Join(_ => _);
 
@@ -27,9 +27,9 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestAsync()
         {
-            var f = FluentFlow.Input<int>().Parallel(2)
-               .Do(Task.FromResult)
-               .Join(_ => _);
+            var f = FluentFlow.Parallel<int>(2)
+                .Do(Task.FromResult)
+                .Join(_ => _);
 
             var r = f.BuildBlock();
 
@@ -39,9 +39,9 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestNested()
         {
-            var f = FluentFlow.Input<int>().Parallel()
+            var f = FluentFlow.Parallel<int>()
                 .Do(
-                    FluentFlow.Input<int>().Parallel()
+                    FluentFlow.Parallel<int>()
                         .Do(_ => _.ToString())
                         .Join(_ => _)
                 )
@@ -58,7 +58,7 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestVariousArguments()
         {
-            var r = (FluentFlow.Input<int>().Parallel(2)
+            var r = (FluentFlow.Parallel<int>(2)
                 .Do(_ => _)
                 .Do(Task.FromResult)
                 .Join((_1, _2) => 1)).BuildBlock();
@@ -66,7 +66,7 @@ namespace SimpleFlow.Tests.Fluent
             Assert.Equal(2, GetMaxWorkers(r));
             Assert.Equal("Sequence(Parallel(Activity,Activity),Activity)", r.ToString());
 
-            r = (FluentFlow.Input<int>().Parallel(2)
+            r = (FluentFlow.Parallel<int>(2)
                 .Do(_ => _)
                 .Do(_ => _)
                 .Do(Task.FromResult)
@@ -75,7 +75,7 @@ namespace SimpleFlow.Tests.Fluent
             Assert.Equal(2, GetMaxWorkers(r));
             Assert.Equal("Sequence(Parallel(Activity,Activity,Activity),Activity)", r.ToString());
 
-            r = (FluentFlow.Input<int>().Parallel(2)
+            r = (FluentFlow.Parallel<int>(2)
                 .Do(_ => _)
                 .Do(_ => _)
                 .Do(_ => _)
@@ -85,7 +85,7 @@ namespace SimpleFlow.Tests.Fluent
             Assert.Equal(2, GetMaxWorkers(r));
             Assert.Equal("Sequence(Parallel(Activity,Activity,Activity,Activity),Activity)", r.ToString());
 
-            r = (FluentFlow.Input<int>().Parallel(2)
+            r = (FluentFlow.Parallel<int>(2)
                 .Do(_ => _)
                 .Do(_ => _)
                 .Do(_ => _)

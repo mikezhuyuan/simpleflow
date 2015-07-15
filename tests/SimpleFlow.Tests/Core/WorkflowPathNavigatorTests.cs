@@ -16,7 +16,7 @@ namespace SimpleFlow.Tests.Core
             var c1 = new SequenceBlock(new[] {a1});
             var f = new ForkBlock(a2, 1);
             var p = new ParallelBlock(new[] {a4, a5}, 1);
-            var c2 = new SequenceBlock(new WorkflowBlock[] {f, c1, a3, p});            
+            var c2 = new SequenceBlock(new WorkflowBlock[] {f, c1, a3, p});
 
             var navigator = new WorkflowPathNavigator(c2);
 

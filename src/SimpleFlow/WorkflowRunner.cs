@@ -4,7 +4,8 @@ namespace SimpleFlow.Core
 {
     public static class WorkflowRunner // todo: configurable and transient service
     {
-        public static Task<TOutput> Run<TInput, TOutput>(Workflow<TInput, TOutput> workflow, TInput input) //todo: use container
+        public static Task<TOutput> Run<TInput, TOutput>(Workflow<TInput, TOutput> workflow, TInput input)
+            //todo: use container
         {
             IDataStore dataStore = new InMemoryDataStore();
             IWorkItemRepository workItemRepo = new InMemoryWorkItemRepository();
@@ -16,7 +17,7 @@ namespace SimpleFlow.Core
             IEngine engine = new Engine(workItemRepo, activityRunner, stateMachineProvider);
 
             var jobId = 1; //todo: create job
-            var inputId = dataStore.Add(jobId, input, typeof(TInput));
+            var inputId = dataStore.Add(jobId, input, typeof (TInput));
             var root = new WorkItem(jobId, null, 0, workflow.Root.Type, pathNavigator.Path(workflow.Root))
             {
                 InputId = inputId

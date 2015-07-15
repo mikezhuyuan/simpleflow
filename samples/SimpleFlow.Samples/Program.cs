@@ -22,21 +22,21 @@ namespace SimpleFlow.Samples
     {
         static async Task Sample1()
         {
-            var workflow = FluentFlow.Input<string>()
-               .Sequence()
-               .Then(_ => _.Split(','))
-               .Then(FluentFlow.Input<IEnumerable<string>>()
-                   .Fork()
-                   .ForEach(FluentFlow.Input<string>()
-                       .Parallel()
-                       .Do(int.Parse)
-                       .Do(_ => _)
-                       .Join((id, name) => new User { Id = id, Name = name }))
-                   .Join())
-               .End()
-               .Build("load multiple users");
+            var workflow = FluentFlow
+                .Sequence<string>()
+                .Then(_ => _.Split(','))
+                .Then(FluentFlow
+                    .Fork<IEnumerable<string>>()
+                    .ForEach(FluentFlow
+                        .Parallel<string>()
+                        .Do(int.Parse)
+                        .Do(_ => _)
+                        .Join((id, name) => new User {Id = id, Name = name}))
+                    .Join())
+                .End()
+                .Build("load multiple users");
 
-            var users = await WorkflowRunner.Run(workflow,"1,2,3");
+            var users = await WorkflowRunner.Run(workflow, "1,2,3");
 
             foreach (var user in users)
             {
@@ -46,48 +46,52 @@ namespace SimpleFlow.Samples
 
         static async Task Sample2()
         {
-            var workflow = FluentFlow.Input<string>()
-                .Sequence()
+            var workflow = FluentFlow
+                .Sequence<string>()
                 .Then(_ => _.ToCharArray())
-                .Then(FluentFlow.Input<IEnumerable<char>>()
-                    .Fork()
-                    .ForEach(async _ => {await Task.Delay(100); return 1;})
+                .Then(FluentFlow
+                    .Fork<IEnumerable<char>>()
+                    .ForEach(async _ =>
+                    {
+                        await Task.Delay(100);
+                        return 1;
+                    })
                     .Join())
                 .Then(array => array.Count())
                 .End()
                 .Build("count string length");
 
-            var count = await WorkflowRunner.Run(workflow,"abcdefgh");
+            var count = await WorkflowRunner.Run(workflow, "abcdefgh");
             Console.WriteLine(count);
         }
 
         static async Task Sample3()
         {
-            var workflow = FluentFlow.Input<string>()
-                .Sequence()
+            var workflow = FluentFlow
+                .Sequence<string>()
                 .Then(_ => _.Split('+'))
-                .Then(FluentFlow.Input<IEnumerable<string>>()
-                    .Parallel(2)
+                .Then(FluentFlow
+                    .Parallel<IEnumerable<string>>(2)
                     .Do(items => int.Parse(items.First()))
                     .Do(items => int.Parse(items.Last()))
                     .Join((x, y) => x + y))
                 .End()
                 .Build("x + y = ?");
 
-            var result = await WorkflowRunner.Run(workflow,"1+2");
+            var result = await WorkflowRunner.Run(workflow, "1+2");
             Console.WriteLine(result);
         }
 
         static async Task Sample4()
         {
-            var workflow = FluentFlow.Input<string>()
-                .Sequence()
+            var workflow = FluentFlow
+                .Sequence<string>()
                 .Then(int.Parse)
                 .Then(_ => new User {Id = 1, Name = "mike"})
                 .End()
                 .Build("load a single user");
 
-            var user = await WorkflowRunner.Run(workflow,"1");
+            var user = await WorkflowRunner.Run(workflow, "1");
             Console.WriteLine(user);
         }
 

@@ -7,11 +7,11 @@ namespace SimpleFlow.Fluent
     {
         internal Func<WorkflowBlock> BuildBlock { get; set; }
 
-        public SimpleFlow.Core.Workflow<TInput, TOutput> Build(string name)
+        public Core.Workflow<TInput, TOutput> Build(string name)
         {
             var root = BuildBlock();
 
-            return new SimpleFlow.Core.Workflow<TInput, TOutput>(name, root);
+            return new Core.Workflow<TInput, TOutput>(name, root);
         }
     }
 }

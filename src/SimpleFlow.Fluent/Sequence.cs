@@ -14,7 +14,7 @@ namespace SimpleFlow.Fluent
         {
             return new SequenceThen<TInitialInput, TOutput>
             {
-                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
+                BuildBlocks = () => BuildBlocks().Union(new[] {new ActivityBlock(func)})
             };
         }
 
@@ -22,15 +22,16 @@ namespace SimpleFlow.Fluent
         {
             return new SequenceThen<TInitialInput, TOutput>
             {
-                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
+                BuildBlocks = () => BuildBlocks().Union(new[] {new ActivityBlock(func)})
             };
         }
 
-        public SequenceThen<TInitialInput, IEnumerable<TOutput>> Then<TOutput>(Func<TInput, TOutput[]> func) //what's the better way of not having this override
+        public SequenceThen<TInitialInput, IEnumerable<TOutput>> Then<TOutput>(Func<TInput, TOutput[]> func)
+            //what's the better way of not having this override
         {
             return new SequenceThen<TInitialInput, IEnumerable<TOutput>>
             {
-                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
+                BuildBlocks = () => BuildBlocks().Union(new[] {new ActivityBlock(func)})
             };
         }
 
@@ -38,7 +39,7 @@ namespace SimpleFlow.Fluent
         {
             return new SequenceThen<TInitialInput, TOutput>
             {
-                BuildBlocks = () => BuildBlocks().Union(new[] { workflow.BuildBlock() })
+                BuildBlocks = () => BuildBlocks().Union(new[] {workflow.BuildBlock()})
             };
         }
 
@@ -46,7 +47,7 @@ namespace SimpleFlow.Fluent
         {
             return new SequenceThen<TInitialInput, IEnumerable<TOutput>>
             {
-                BuildBlocks = () => BuildBlocks().Union(new[] { workflow.BuildBlock() })
+                BuildBlocks = () => BuildBlocks().Union(new[] {workflow.BuildBlock()})
             };
         }
 

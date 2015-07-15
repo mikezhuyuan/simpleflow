@@ -10,13 +10,13 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
-            var r = FluentFlow.Input<string>()
-                .Sequence()
+            var r = FluentFlow
+                .Sequence<string>()
                 .Then(_ => _.Split(',').AsEnumerable())
-                .Then(FluentFlow.Input<IEnumerable<string>>()
-                    .Fork()
-                    .ForEach(FluentFlow.Input<string>()
-                        .Parallel()
+                .Then(FluentFlow
+                    .Fork<IEnumerable<string>>()
+                    .ForEach(FluentFlow
+                        .Parallel<string>()
                         .Do(int.Parse)
                         .Do(_ => _)
                         .Join((id, name) => new User()))

@@ -42,7 +42,6 @@
     <Compile Include="Parallel.cs" />
     <Compile Include="FluentFlow.cs" />
     <Compile Include="Fork.cs" />
-    <Compile Include="Input.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Workflow.cs" />

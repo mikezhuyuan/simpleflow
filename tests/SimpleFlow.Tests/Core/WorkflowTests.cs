@@ -16,8 +16,8 @@ namespace SimpleFlow.Tests.Core
 
             var activity = new ActivityBlock(pow);
 
-            var workflow = new Workflow<int,int>("test", activity);
-            var output = await WorkflowRunner.Run(workflow,2);
+            var workflow = new Workflow<int, int>("test", activity);
+            var output = await WorkflowRunner.Run(workflow, 2);
 
             Assert.Equal(4, output);
         }
@@ -33,8 +33,8 @@ namespace SimpleFlow.Tests.Core
 
             var activity = new ActivityBlock(identity);
 
-            var workflow = new Workflow<int,int>("test", activity);
-            var output = await WorkflowRunner.Run(workflow,1);
+            var workflow = new Workflow<int, int>("test", activity);
+            var output = await WorkflowRunner.Run(workflow, 1);
 
             Assert.Equal(1, output);
         }
@@ -49,9 +49,9 @@ namespace SimpleFlow.Tests.Core
 
             var seq = new SequenceBlock(new[] {a1, a2});
 
-            var workflow = new Workflow<int,int>("test", seq);
+            var workflow = new Workflow<int, int>("test", seq);
 
-            var output = await WorkflowRunner.Run(workflow,0);
+            var output = await WorkflowRunner.Run(workflow, 0);
 
             Assert.Equal(2, output);
         }
@@ -70,9 +70,9 @@ namespace SimpleFlow.Tests.Core
 
             var seq = new SequenceBlock(steps);
 
-            var workflow = new Workflow<int,int>("test", seq);
+            var workflow = new Workflow<int, int>("test", seq);
 
-            var output = await WorkflowRunner.Run(workflow,0);
+            var output = await WorkflowRunner.Run(workflow, 0);
 
             Assert.Equal(count, output);
         }
@@ -86,7 +86,7 @@ namespace SimpleFlow.Tests.Core
             var fork = new ForkBlock(activity, 2);
 
             var workflow = new Workflow<int[], IEnumerable<int>>("test", fork);
-            var output = await WorkflowRunner.Run(workflow,new[] { 1, 2, 3 });
+            var output = await WorkflowRunner.Run(workflow, new[] {1, 2, 3});
             //int[] would work but not recommended
 
             Assert.Equal(new[] {2, 4, 6}, output);
@@ -102,7 +102,7 @@ namespace SimpleFlow.Tests.Core
 
             var workflow = new Workflow<IEnumerable<int>, IEnumerable<int>>("test", fork);
             var input = Enumerable.Repeat(1, 1000).ToArray();
-            var output = await WorkflowRunner.Run(workflow,input);
+            var output = await WorkflowRunner.Run(workflow, input);
             //int[] would work but not recommended
 
             Assert.Equal(input, output);
@@ -119,7 +119,7 @@ namespace SimpleFlow.Tests.Core
             var workflow = new Workflow<int[][][], IEnumerable<IEnumerable<IEnumerable<int>>>>("test", fork);
             var output =
                 await
-                    WorkflowRunner.Run(workflow,new[] { new[] { new[] { 1 } } });
+                    WorkflowRunner.Run(workflow, new[] {new[] {new[] {1}}});
 
             Assert.Equal(new[] {1}, output.SelectMany(_ => _).SelectMany(_ => _));
         }
@@ -132,7 +132,7 @@ namespace SimpleFlow.Tests.Core
 
             var parallel = new ParallelBlock(new[] {new ActivityBlock(stringify), new ActivityBlock(identity)}, 1);
             var workflow = new Workflow<int, IEnumerable<object>>("test", parallel);
-            var output = (await WorkflowRunner.Run(workflow,1)).ToArray();
+            var output = (await WorkflowRunner.Run(workflow, 1)).ToArray();
 
             Assert.Equal(2, output.Length);
             Assert.Equal("1", output[0]);
@@ -154,7 +154,7 @@ namespace SimpleFlow.Tests.Core
             });
 
             var workflow = new Workflow<string, int>("test", root);
-            var output = await WorkflowRunner.Run(workflow,"1,2,3,4,5,6,7,8,9,10");
+            var output = await WorkflowRunner.Run(workflow, "1,2,3,4,5,6,7,8,9,10");
 
             Assert.Equal(55, output);
         }
@@ -173,8 +173,8 @@ namespace SimpleFlow.Tests.Core
                 new ActivityBlock(sum)
             });
 
-            var workflow = new Workflow<string,int>("test", root);
-            var output = await WorkflowRunner.Run(workflow,"1,2,3,4,5,6,7,8,9,10");
+            var workflow = new Workflow<string, int>("test", root);
+            var output = await WorkflowRunner.Run(workflow, "1,2,3,4,5,6,7,8,9,10");
 
             Assert.Equal(55, output);
         }
@@ -193,7 +193,7 @@ namespace SimpleFlow.Tests.Core
 
             var workflow = new Workflow<string, int>("test", root);
 
-            var output = await WorkflowRunner.Run(workflow,"1");
+            var output = await WorkflowRunner.Run(workflow, "1");
 
             Assert.Equal(2, output);
         }
@@ -230,7 +230,7 @@ namespace SimpleFlow.Tests.Core
             });
 
             var workflow = new Workflow<string, IEnumerable<User>>("test", root);
-            var output = await WorkflowRunner.Run(workflow,"1,2,3");
+            var output = await WorkflowRunner.Run(workflow, "1,2,3");
 
             Assert.Equal(
                 new[] {new User {Id = 1, Name = "n1"}, new User {Id = 2, Name = "n2"}, new User {Id = 3, Name = "n3"}},
