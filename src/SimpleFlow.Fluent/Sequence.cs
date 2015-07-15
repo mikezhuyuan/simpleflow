@@ -8,13 +8,13 @@ namespace SimpleFlow.Fluent
 {
     public class SequenceThen<TInitialInput, TInput>
     {
-        internal Func<IEnumerable<WorkflowBlock>> BuildWorkflows = () => Enumerable.Empty<WorkflowBlock>();
+        internal Func<IEnumerable<WorkflowBlock>> BuildBlocks = () => Enumerable.Empty<WorkflowBlock>();
 
         public SequenceThen<TInitialInput, TOutput> Then<TOutput>(Func<TInput, TOutput> func)
         {
             return new SequenceThen<TInitialInput, TOutput>
             {
-                BuildWorkflows = () => BuildWorkflows().Union(new[] { new ActivityBlock(func) })
+                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
             };
         }
 
@@ -22,7 +22,7 @@ namespace SimpleFlow.Fluent
         {
             return new SequenceThen<TInitialInput, TOutput>
             {
-                BuildWorkflows = () => BuildWorkflows().Union(new[] { new ActivityBlock(func) })
+                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
             };
         }
 
@@ -30,31 +30,31 @@ namespace SimpleFlow.Fluent
         {
             return new SequenceThen<TInitialInput, IEnumerable<TOutput>>
             {
-                BuildWorkflows = () => BuildWorkflows().Union(new[] { new ActivityBlock(func) })
+                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
             };
         }
 
-        public SequenceThen<TInitialInput, TOutput> Then<TOutput>(WorkflowBuilder<TInput, TOutput> workflowBuilder)
+        public SequenceThen<TInitialInput, TOutput> Then<TOutput>(Workflow<TInput, TOutput> workflow)
         {
             return new SequenceThen<TInitialInput, TOutput>
             {
-                BuildWorkflows = () => BuildWorkflows().Union(new[] { workflowBuilder.BuildWorkflow() })
+                BuildBlocks = () => BuildBlocks().Union(new[] { workflow.BuildBlock() })
             };
         }
 
-        public SequenceThen<TInitialInput, IEnumerable<TOutput>> Then<TOutput>(WorkflowBuilder<TInput, TOutput[]> workflowBuilder)
+        public SequenceThen<TInitialInput, IEnumerable<TOutput>> Then<TOutput>(Workflow<TInput, TOutput[]> workflow)
         {
             return new SequenceThen<TInitialInput, IEnumerable<TOutput>>
             {
-                BuildWorkflows = () => BuildWorkflows().Union(new[] { workflowBuilder.BuildWorkflow() })
+                BuildBlocks = () => BuildBlocks().Union(new[] { workflow.BuildBlock() })
             };
         }
 
-        public WorkflowBuilder<TInitialInput, TInput> End()
+        public Workflow<TInitialInput, TInput> End()
         {
-            return new WorkflowBuilder<TInitialInput, TInput>
+            return new Workflow<TInitialInput, TInput>
             {
-                BuildWorkflow = () => new SequenceBlock(BuildWorkflows())
+                BuildBlock = () => new SequenceBlock(BuildBlocks())
             };
         }
     }

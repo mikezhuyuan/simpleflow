@@ -3,13 +3,13 @@ using SimpleFlow.Core;
 
 namespace SimpleFlow.Fluent
 {
-    public class WorkflowBuilder<TInput, TOutput>
+    public class Workflow<TInput, TOutput>
     {
-        internal Func<WorkflowBlock> BuildWorkflow { get; set; }
+        internal Func<WorkflowBlock> BuildBlock { get; set; }
 
         public SimpleFlow.Core.Workflow<TInput, TOutput> Build(string name)
         {
-            var root = BuildWorkflow();
+            var root = BuildBlock();
 
             return new SimpleFlow.Core.Workflow<TInput, TOutput>(name, root);
         }

@@ -8,26 +8,26 @@ namespace SimpleFlow.Fluent
 {
     public abstract class ParallelDo
     {
-        internal Func<IEnumerable<WorkflowBlock>> BuildWorkflows = () => Enumerable.Empty<WorkflowBlock>();
+        internal Func<IEnumerable<WorkflowBlock>> BuildBlocks = () => Enumerable.Empty<WorkflowBlock>();
         internal int MaxWorkers = 1;
 
         internal Func<IEnumerable<WorkflowBlock>> WithBranch(Delegate method)
         {
-            return () => BuildWorkflows().Union(new[] {new ActivityBlock(method)});
+            return () => BuildBlocks().Union(new[] {new ActivityBlock(method)});
         }
 
-        internal Func<IEnumerable<WorkflowBlock>> WithBranch<TInput, TOutput>(WorkflowBuilder<TInput, TOutput> workflowBuilder)
+        internal Func<IEnumerable<WorkflowBlock>> WithBranch<TInput, TOutput>(Workflow<TInput, TOutput> workflow)
         {
-            return () => BuildWorkflows().Union(new[] {(workflowBuilder.BuildWorkflow())});
+            return () => BuildBlocks().Union(new[] {(workflow.BuildBlock())});
         }
 
-        internal WorkflowBuilder<TInput, TOutput> Workflow<TInput, TOutput>(Delegate method)
+        internal Workflow<TInput, TOutput> Workflow<TInput, TOutput>(Delegate method)
         {
-            return new WorkflowBuilder<TInput, TOutput>
+            return new Workflow<TInput, TOutput>
             {
-                BuildWorkflow = () => new SequenceBlock(new WorkflowBlock[]
+                BuildBlock = () => new SequenceBlock(new WorkflowBlock[]
                 {
-                    new ParallelBlock(BuildWorkflows(), MaxWorkers),
+                    new ParallelBlock(BuildBlocks(), MaxWorkers),
                     new ActivityBlock(method)
                 })
             };
@@ -40,7 +40,7 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
@@ -49,16 +49,16 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public ParallelDo<TInput, TOutput> Do<TOutput>(WorkflowBuilder<TInput, TOutput> workflowBuilder)
+        public ParallelDo<TInput, TOutput> Do<TOutput>(Workflow<TInput, TOutput> workflow)
         {
             return new ParallelDo<TInput, TOutput>
             {
-                BuildWorkflows = WithBranch(workflowBuilder),
+                BuildBlocks = WithBranch(workflow),
                 MaxWorkers = MaxWorkers
             };
         }
@@ -70,7 +70,7 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
@@ -79,21 +79,21 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public ParallelDo<TInput, TResult1, TOutput> Do<TOutput>(WorkflowBuilder<TInput, TOutput> workflowBuilder)
+        public ParallelDo<TInput, TResult1, TOutput> Do<TOutput>(Workflow<TInput, TOutput> workflow)
         {
             return new ParallelDo<TInput, TResult1, TOutput>
             {
-                BuildWorkflows = WithBranch(workflowBuilder),
+                BuildBlocks = WithBranch(workflow),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public WorkflowBuilder<TInput, TOutput> Join<TOutput>(Func<TResult1, TOutput> func)
+        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TOutput> func)
         {
             return Workflow<TInput, TOutput>(func);
         }
@@ -105,7 +105,7 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TResult2, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
@@ -114,21 +114,21 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TResult2, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public ParallelDo<TInput, TResult1, TResult2, TOutput> Do<TOutput>(WorkflowBuilder<TInput, TOutput> workflowBuilder)
+        public ParallelDo<TInput, TResult1, TResult2, TOutput> Do<TOutput>(Workflow<TInput, TOutput> workflow)
         {
             return new ParallelDo<TInput, TResult1, TResult2, TOutput>
             {
-                BuildWorkflows = WithBranch(workflowBuilder),
+                BuildBlocks = WithBranch(workflow),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public WorkflowBuilder<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TOutput> func)
+        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TOutput> func)
         {
             return Workflow<TInput, TOutput>(func);
         }
@@ -140,7 +140,7 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TResult2, TResult3, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
@@ -149,21 +149,21 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TResult2, TResult3, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public ParallelDo<TInput, TResult1, TResult2, TResult3, TOutput> Do<TOutput>(WorkflowBuilder<TInput, TOutput> workflowBuilder)
+        public ParallelDo<TInput, TResult1, TResult2, TResult3, TOutput> Do<TOutput>(Workflow<TInput, TOutput> workflow)
         {
             return new ParallelDo<TInput, TResult1, TResult2, TResult3, TOutput>
             {
-                BuildWorkflows = WithBranch(workflowBuilder),
+                BuildBlocks = WithBranch(workflow),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public WorkflowBuilder<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TResult3, TOutput> func)
+        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TResult3, TOutput> func)
         {
             return Workflow<TInput, TOutput>(func);
         }
@@ -176,7 +176,7 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TResult2, TResult3, TResult4, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
@@ -186,22 +186,22 @@ namespace SimpleFlow.Fluent
         {
             return new ParallelDo<TInput, TResult1, TResult2, TResult3, TResult4, TOutput>
             {
-                BuildWorkflows = WithBranch(func),
+                BuildBlocks = WithBranch(func),
                 MaxWorkers = MaxWorkers
             };
         }
 
         public ParallelDo<TInput, TResult1, TResult2, TResult3, TResult4, TOutput> Do<TOutput>(
-            WorkflowBuilder<TInput, TOutput> workflowBuilder)
+            Workflow<TInput, TOutput> workflow)
         {
             return new ParallelDo<TInput, TResult1, TResult2, TResult3, TResult4, TOutput>
             {
-                BuildWorkflows = WithBranch(workflowBuilder),
+                BuildBlocks = WithBranch(workflow),
                 MaxWorkers = MaxWorkers
             };
         }
 
-        public WorkflowBuilder<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TResult3, TResult4, TOutput> func)
+        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TResult3, TResult4, TOutput> func)
         {
             return Workflow<TInput, TOutput>(func);
         }
@@ -209,7 +209,7 @@ namespace SimpleFlow.Fluent
 
     public class ParallelDo<TInput, TResult1, TResult2, TResult3, TResult4, TResult5> : ParallelDo
     {
-        public WorkflowBuilder<TInput, TOutput> Join<TOutput>(
+        public Workflow<TInput, TOutput> Join<TOutput>(
             Func<TResult1, TResult2, TResult3, TResult4, TResult5, TOutput> func)
         {
             return Workflow<TInput, TOutput>(func);

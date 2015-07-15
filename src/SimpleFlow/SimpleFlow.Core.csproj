@@ -56,7 +56,6 @@
     <Compile Include="InMemoryWorkItemRepository.cs" />
     <Compile Include="ParallelBlock.cs" />
     <Compile Include="StateMachineProvider.cs" />
-    <Compile Include="Assembler.cs" />
     <Compile Include="WorkflowPathNavigator.cs" />
     <Compile Include="ForkBlock.cs" />
     <Compile Include="ForkStateMachine.cs" />

@@ -16,7 +16,7 @@ namespace SimpleFlow.Tests.Fluent
                 .Then(_ => _.ToString())
                 .Then(int.Parse)
                 .End()
-                .BuildWorkflow();
+                .BuildBlock();
 
             Assert.Equal(typeof (string), r.InputTypes.Single());
             Assert.Equal(typeof (int), r.OutputType);
@@ -31,7 +31,7 @@ namespace SimpleFlow.Tests.Fluent
                 .Sequence()
                 .Then(Task.FromResult)
                 .End()
-                .BuildWorkflow();
+                .BuildBlock();
 
             Assert.Equal("Sequence(Activity)", r.ToString());
         }
@@ -49,7 +49,7 @@ namespace SimpleFlow.Tests.Fluent
                 .Then(f1)
                 .End();
 
-            var r = f2.BuildWorkflow();
+            var r = f2.BuildBlock();
 
             Assert.Equal(typeof (string), r.InputTypes.Single());
             Assert.Equal(typeof (int), r.OutputType);
