@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SimpleFlow.Core;
 
-namespace SimpleFlow.Tests.Core
+namespace SimpleFlow.Tests
 {
     static class Helpers
     {
@@ -36,5 +36,10 @@ namespace SimpleFlow.Tests.Core
         {
             return new Random().Next(0, 1000).ToString();
         }
+
+        public static Func<Exception, TOutput> ExceptionHandler<TOutput>()
+        {
+            return ex => default(TOutput);
+        } 
     }
 }

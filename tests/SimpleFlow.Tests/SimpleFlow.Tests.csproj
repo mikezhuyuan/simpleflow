@@ -59,11 +59,13 @@
     <Compile Include="Core\ActivityRunnerTests.cs" />
     <Compile Include="Core\EngineTests.cs" />
     <Compile Include="Core\ForkStateMachineTests.cs" />
-    <Compile Include="Core\Helpers.cs" />
+    <Compile Include="Fluent\CatchTests.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="Core\InMemoryDataStoreTests.cs" />
     <Compile Include="Core\InMemoryWorkItemRepositoryTests.cs" />
     <Compile Include="Core\SequenceStateMachineTests.cs" />
     <Compile Include="Core\WorkflowDefinitionTests.cs" />
+    <Compile Include="Fluent\ActivityTests.cs" />
     <Compile Include="Fluent\ForkTests.cs" />
     <Compile Include="Fluent\IntegrationTests.cs" />
     <Compile Include="Fluent\ParallelTests.cs" />

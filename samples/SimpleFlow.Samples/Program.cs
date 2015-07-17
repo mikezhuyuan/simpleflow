@@ -18,6 +18,12 @@ namespace SimpleFlow.Samples
         }
     }
 
+    class Response<TResult>
+    {
+        public bool Success;
+        public TResult Result;
+    }
+
     class Program
     {
         static async Task Sample1()
@@ -101,6 +107,20 @@ namespace SimpleFlow.Samples
             Console.WriteLine(user);
         }
 
+        static async Task Sample5()
+        {
+            Func<int, Response<int>> divide = i => new Response<int>{Result = i / i};
+
+            var workflow =
+                FluentFlow.Activity(divide)
+                    .Catch(ex => new Response<int> {Result = -1, Success = false})
+                    .Build("divide");
+
+            var r = await WorkflowRunner.Run(workflow, 0);
+            Console.WriteLine("success: {0}, result: {1}", r.Success, r.Result);
+
+        }
+
         static void Main(string[] args)
         {
             var all = new[]
@@ -108,7 +128,8 @@ namespace SimpleFlow.Samples
                 Sample1(),
                 Sample2(),
                 Sample3(),
-                Sample4()
+                Sample4(),
+                Sample5()
             };
 
             Task.WaitAll(all);

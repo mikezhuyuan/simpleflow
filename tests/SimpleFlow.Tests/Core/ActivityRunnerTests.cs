@@ -112,5 +112,29 @@ namespace SimpleFlow.Tests.Core
 
             _dataStore.Received(1).Add(workItem.JobId, 1, typeof (int));
         }
+
+        [Fact]
+        public async Task TestExceptionHandling()
+        {
+            var divider = 0;
+            Func<int> divide = () => 1 / divider;
+
+            var workItem = new WorkItem { JobId = Helpers.Integer() };
+            var activity = new ActivityBlock(divide);
+
+            _workflowPathNavigator.Find(null).ReturnsForAnyArgs(activity);
+
+            Exception exception = null;
+            activity.ExceptionHandler = (Func<Exception, int>)(ex =>
+            {
+                exception = ex;
+                return -1;
+            });
+
+            await _activityRunner.Run(workItem);
+
+            Assert.True(exception is DivideByZeroException);
+            _dataStore.Received(1).Add(workItem.JobId, -1, typeof(int));
+        }
     }
 }

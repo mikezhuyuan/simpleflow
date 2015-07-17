@@ -13,5 +13,23 @@ namespace SimpleFlow.Fluent
 
             return new Core.Workflow<TInput, TOutput>(name, root);
         }
+
+        public Workflow<TInput, TOutput> Catch(Func<Exception, TOutput> handler)
+        {
+            if (handler == null)
+                handler = ex => default(TOutput);
+
+            return new Workflow<TInput, TOutput>()
+            {
+                BuildBlock = () =>
+                {
+                    var r = BuildBlock();
+
+                    r.ExceptionHandler = handler;
+
+                    return r;
+                }
+            };
+        }
     }
 }

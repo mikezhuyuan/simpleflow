@@ -27,7 +27,7 @@ namespace SimpleFlow.Core
             _repository = repository;
         }
 
-        public Task Run(WorkItem workItem)
+        public async Task Run(WorkItem workItem)
         {
             if (workItem == null) throw new ArgumentNullException("workItem");
             if (workItem.Type != WorkflowType.Activity) throw new ArgumentException("type must be Activity");
@@ -43,7 +43,19 @@ namespace SimpleFlow.Core
 
             var activity = (ActivityBlock) definition;
 
-            return RunCore(workItem, activity);
+            try
+            {
+                await RunCore(workItem, activity);
+            }
+            catch (Exception ex)
+            {
+                if (definition.ExceptionHandler == null) // todo: set status to failed
+                    throw;
+
+                var output = definition.ExceptionHandler.DynamicInvoke(ex.InnerException); // todo: Here exception is thrown from dynamic invoke, the actual failure is inside InnerException, is that safe to lose context?
+
+                workItem.OutputId = _dataStore.Add(workItem.JobId, output, activity.OutputType);
+            }
         }
 
         internal async Task RunCore(WorkItem workItem, ActivityBlock activityBlock)
