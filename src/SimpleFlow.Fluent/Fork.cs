@@ -43,42 +43,10 @@ namespace SimpleFlow.Fluent
         }
     }
 
-    public class ForkForEach<TInput>
-    {
-        internal int MaxWorkers;
-
-        public ForkJoin<TInput, TOutput> ForEach<TOutput>(Func<TInput, TOutput> func)
-        {
-            return new ForkJoin<TInput, TOutput>
-            {
-                BuildBlocks = () => new ActivityBlock(func),
-                MaxWorkers = MaxWorkers
-            };
-        }
-
-        public ForkJoin<TInput, TOutput> ForEach<TOutput>(Func<TInput, Task<TOutput>> func)
-        {
-            return new ForkJoin<TInput, TOutput>
-            {
-                BuildBlocks = () => new ActivityBlock(func),
-                MaxWorkers = MaxWorkers
-            };
-        }
-
-        public ForkJoin<TInput, TOutput> ForEach<TOutput>(Workflow<TInput, TOutput> workflow)
-        {
-            return new ForkJoin<TInput, TOutput>
-            {
-                BuildBlocks = () => workflow.BuildBlock(),
-                MaxWorkers = MaxWorkers
-            };
-        }
-    }
-
     public class ForkJoin<TInput, TOutput>
     {
         internal int MaxWorkers;
-        internal Func<WorkflowBlock> BuildBlocks { get; set; } //todo: BuildWorkflow? maybe too verbose
+        internal Func<WorkflowBlock> BuildBlocks { get; set; }
 
         public Workflow<IEnumerable<TInput>, IEnumerable<TOutput>> Join()
         {

@@ -12,7 +12,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             var r = FluentFlow
                 .Sequence<string>()
-                .Then(_ => _.Split(',').AsEnumerable())
+                .Then(_ => _.Split(','))
                 .Then(FluentFlow
                     .Fork<IEnumerable<string>>()
                     .ForEach(FluentFlow
