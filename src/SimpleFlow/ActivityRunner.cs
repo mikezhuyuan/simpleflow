@@ -57,9 +57,11 @@ namespace SimpleFlow.Core
 
                 workItem.OutputId = _dataStore.Add(workItem.JobId, output, activity.OutputType);
             }
+
+            workItem.Status = WorkItemStatus.Completed;
         }
 
-        internal async Task RunCore(WorkItem workItem, ActivityBlock activityBlock)
+        async Task RunCore(WorkItem workItem, ActivityBlock activityBlock)
         {
             workItem.Status = WorkItemStatus.Running;
             _repository.Update(workItem);

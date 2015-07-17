@@ -97,7 +97,6 @@ namespace SimpleFlow.Core
 
             await _activityRunner.Run(workItem);
 
-            workItem.Status = WorkItemStatus.Completed;
             _repository.Update(workItem);
 
             var parent = _repository.GetParent(workItem);

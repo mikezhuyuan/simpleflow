@@ -27,15 +27,11 @@ namespace SimpleFlow.Tests.Core
                 Status = WorkItemStatus.Created
             };
 
-            var id = _repository.Add(activity);
-
             _engine.Kick(activity);
 
             await _engine.Completion;
 
-            activity = _repository.Get(id);
-
-            Assert.Equal(WorkItemStatus.Completed, activity.Status);
+            _activityRunner.Received(1).Run(Arg.Is<WorkItem>(wi => wi.Id == activity.Id));
         }
 
         [Fact]
@@ -46,7 +42,7 @@ namespace SimpleFlow.Tests.Core
                 Status = WorkItemStatus.WaitingForChildren
             };
 
-            var id = _repository.Add(sequence);
+            _repository.Add(sequence);
 
             var machine = Substitute.For<IStateMachine>();
 
