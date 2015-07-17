@@ -20,8 +20,8 @@ namespace SimpleFlow.Samples
 
     class Response<TResult>
     {
-        public bool Success;
         public TResult Result;
+        public bool Success;
     }
 
     class Program
@@ -32,17 +32,17 @@ namespace SimpleFlow.Samples
                 .Sequence<string>()
                 .Then(_ => _.Split(','))
                 .Then(FluentFlow
-                      .Fork<IEnumerable<string>>()
-                      .ForEach(FluentFlow
-                              .Sequence<string>()
-                              .Then(FluentFlow
-                                    .Parallel<string>()
-                                    .Do(int.Parse)
-                                    .Do(_ => _)
-                                    .Join())
-                              .Then(_ => new User { Id = _.Item1, Name = _.Item2 })
-                              .End())
-                      .Join())
+                    .Fork<IEnumerable<string>>()
+                    .ForEach(FluentFlow
+                        .Sequence<string>()
+                        .Then(FluentFlow
+                            .Parallel<string>()
+                            .Do(int.Parse)
+                            .Do(_ => _)
+                            .Join())
+                        .Then(_ => new User {Id = _.Item1, Name = _.Item2})
+                        .End())
+                    .Join())
                 .End()
                 .Build("load multiple users");
 
@@ -82,10 +82,10 @@ namespace SimpleFlow.Samples
                 .Then(_ => _.Split('+'))
                 .Then(
                     FluentFlow
-                    .Parallel<IEnumerable<string>>(2)
-                    .Do(items => int.Parse(items.First()))
-                    .Do(items => int.Parse(items.Last()))
-                    .Join())
+                        .Parallel<IEnumerable<string>>(2)
+                        .Do(items => int.Parse(items.First()))
+                        .Do(items => int.Parse(items.Last()))
+                        .Join())
                 .Then(_ => _.Item1 + _.Item2)
                 .End()
                 .Build("x + y = ?");
@@ -109,7 +109,7 @@ namespace SimpleFlow.Samples
 
         static async Task Sample5()
         {
-            Func<int, Response<int>> divide = i => new Response<int>{Result = i / i};
+            Func<int, Response<int>> divide = i => new Response<int> {Result = i/i};
 
             var workflow =
                 FluentFlow.Activity(divide)
@@ -118,7 +118,6 @@ namespace SimpleFlow.Samples
 
             var r = await WorkflowRunner.Run(workflow, 0);
             Console.WriteLine("success: {0}, result: {1}", r.Success, r.Result);
-
         }
 
         static void Main(string[] args)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SimpleFlow.Core;
@@ -21,7 +20,7 @@ namespace SimpleFlow.Tests.Fluent
             var r = f.BuildBlock();
 
             Assert.Equal(typeof (int), r.InputTypes.Single());
-            Assert.Equal(typeof(IEnumerable<object>), r.OutputType);
+            Assert.Equal(typeof (IEnumerable<object>), r.OutputType);
             Assert.Equal(2, GetMaxWorkers(r));
 
             Assert.Equal("Parallel(Activity,Activity)", r.ToString());

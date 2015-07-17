@@ -40,6 +40,6 @@ namespace SimpleFlow.Tests
         public static Func<Exception, TOutput> ExceptionHandler<TOutput>()
         {
             return ex => default(TOutput);
-        } 
+        }
     }
 }

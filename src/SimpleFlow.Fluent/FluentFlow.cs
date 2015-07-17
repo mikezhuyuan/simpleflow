@@ -41,6 +41,6 @@ namespace SimpleFlow.Fluent
             {
                 BuildBlock = () => new ActivityBlock(func)
             };
-        } 
+        }
     }
 }

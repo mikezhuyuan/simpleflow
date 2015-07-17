@@ -52,7 +52,8 @@ namespace SimpleFlow.Core
                 if (definition.ExceptionHandler == null) // todo: set status to failed
                     throw;
 
-                var output = definition.ExceptionHandler.DynamicInvoke(ex.InnerException); // todo: Here exception is thrown from dynamic invoke, the actual failure is inside InnerException, is that safe to lose context?
+                var output = definition.ExceptionHandler.DynamicInvoke(ex.InnerException);
+                    // todo: Here exception is thrown from dynamic invoke, the actual failure is inside InnerException, is that safe to lose context?
 
                 workItem.OutputId = _dataStore.Add(workItem.JobId, output, activity.OutputType);
             }
@@ -84,7 +85,8 @@ namespace SimpleFlow.Core
             {
                 var arg = _dataStore.Get(workItem.InputId.Value);
 
-                if (inputTypes[0].IsTuple() && arg is object[]) // If output is array from parallel and input of continuation is Tuple
+                if (inputTypes[0].IsTuple() && arg is object[])
+                    // If output is array from parallel and input of continuation is Tuple
                 {
                     var ctor = inputTypes[0].GetConstructors().Single();
                     arg = ctor.Invoke((object[]) arg);
@@ -92,7 +94,7 @@ namespace SimpleFlow.Core
 
                 if (activityBlock.IsAsync)
                 {
-                    var task = (Task)activityBlock.Method.DynamicInvoke(arg);
+                    var task = (Task) activityBlock.Method.DynamicInvoke(arg);
                     await task;
 
                     output = task.GetResult();

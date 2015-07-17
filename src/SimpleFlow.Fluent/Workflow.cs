@@ -19,7 +19,7 @@ namespace SimpleFlow.Fluent
             if (handler == null)
                 handler = ex => default(TOutput);
 
-            return new Workflow<TInput, TOutput>()
+            return new Workflow<TInput, TOutput>
             {
                 BuildBlock = () =>
                 {

@@ -22,11 +22,11 @@ namespace SimpleFlow.Tests.Fluent
         {
             var handler = Helpers.ExceptionHandler<int>();
             var r = FluentFlow
-               .Sequence<string>()
-               .Then(int.Parse)
-               .End()
-               .Catch(handler)
-               .BuildBlock();
+                .Sequence<string>()
+                .Then(int.Parse)
+                .End()
+                .Catch(handler)
+                .BuildBlock();
 
             Assert.Equal(handler, r.ExceptionHandler);
         }

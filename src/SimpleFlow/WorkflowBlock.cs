@@ -9,7 +9,7 @@ namespace SimpleFlow.Core
         public abstract WorkflowType Type { get; }
         public IEnumerable<Type> InputTypes { get; protected set; }
         public Type OutputType { get; protected set; }
-        public Delegate ExceptionHandler { get; set; } 
+        public Delegate ExceptionHandler { get; set; }
     }
 
     public abstract class GroupBlock : WorkflowBlock
