@@ -21,15 +21,11 @@ namespace SimpleFlow.Fluent
             return () => BuildBlocks().Union(new[] {(workflow.BuildBlock())});
         }
 
-        internal Workflow<TInput, TOutput> Workflow<TInput, TOutput>(Delegate method)
+        internal Workflow<TInput, TOutput> Workflow<TInput, TOutput>()
         {
             return new Workflow<TInput, TOutput>
             {
-                BuildBlock = () => new SequenceBlock(new WorkflowBlock[]
-                {
-                    new ParallelBlock(BuildBlocks(), MaxWorkers),
-                    new ActivityBlock(method)
-                })
+                BuildBlock = () => new ParallelBlock(BuildBlocks(), MaxWorkers)
             };
         }
     }
@@ -92,11 +88,6 @@ namespace SimpleFlow.Fluent
                 MaxWorkers = MaxWorkers
             };
         }
-
-        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TOutput> func)
-        {
-            return Workflow<TInput, TOutput>(func);
-        }
     }
 
     public class ParallelDo<TInput, TResult1, TResult2> : ParallelDo
@@ -128,9 +119,9 @@ namespace SimpleFlow.Fluent
             };
         }
 
-        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TOutput> func)
+        public Workflow<TInput, Tuple<TResult1, TResult2>> Join()
         {
-            return Workflow<TInput, TOutput>(func);
+            return Workflow<TInput, Tuple<TResult1, TResult2>>();
         }
     }
 
@@ -163,9 +154,9 @@ namespace SimpleFlow.Fluent
             };
         }
 
-        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TResult3, TOutput> func)
+        public Workflow<TInput, Tuple<TResult1, TResult2, TResult3>> Join()
         {
-            return Workflow<TInput, TOutput>(func);
+            return Workflow<TInput, Tuple<TResult1, TResult2, TResult3>>();
         }
     }
 
@@ -201,18 +192,17 @@ namespace SimpleFlow.Fluent
             };
         }
 
-        public Workflow<TInput, TOutput> Join<TOutput>(Func<TResult1, TResult2, TResult3, TResult4, TOutput> func)
+        public Workflow<TInput, Tuple<TResult1, TResult2, TResult3, TResult4>> Join()
         {
-            return Workflow<TInput, TOutput>(func);
+            return Workflow<TInput, Tuple<TResult1, TResult2, TResult3, TResult4>>();
         }
     }
 
     public class ParallelDo<TInput, TResult1, TResult2, TResult3, TResult4, TResult5> : ParallelDo
     {
-        public Workflow<TInput, TOutput> Join<TOutput>(
-            Func<TResult1, TResult2, TResult3, TResult4, TResult5, TOutput> func)
+        public Workflow<TInput, Tuple<TResult1, TResult2, TResult3, TResult4, TResult5>> Join()
         {
-            return Workflow<TInput, TOutput>(func);
+            return Workflow<TInput, Tuple<TResult1, TResult2, TResult3, TResult4, TResult5>>();
         }
     }
 }

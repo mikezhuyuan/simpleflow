@@ -26,13 +26,17 @@ namespace SimpleFlow.Samples
                 .Sequence<string>()
                 .Then(_ => _.Split(','))
                 .Then(FluentFlow
-                    .Fork<IEnumerable<string>>()
-                    .ForEach(FluentFlow
-                        .Parallel<string>()
-                        .Do(int.Parse)
-                        .Do(_ => _)
-                        .Join((id, name) => new User {Id = id, Name = name}))
-                    .Join())
+                      .Fork<IEnumerable<string>>()
+                      .ForEach(FluentFlow
+                              .Sequence<string>()
+                              .Then(FluentFlow
+                                    .Parallel<string>()
+                                    .Do(int.Parse)
+                                    .Do(_ => _)
+                                    .Join())
+                              .Then(_ => new User { Id = _.Item1, Name = _.Item2 })
+                              .End())
+                      .Join())
                 .End()
                 .Build("load multiple users");
 
@@ -70,11 +74,13 @@ namespace SimpleFlow.Samples
             var workflow = FluentFlow
                 .Sequence<string>()
                 .Then(_ => _.Split('+'))
-                .Then(FluentFlow
+                .Then(
+                    FluentFlow
                     .Parallel<IEnumerable<string>>(2)
                     .Do(items => int.Parse(items.First()))
                     .Do(items => int.Parse(items.Last()))
-                    .Join((x, y) => x + y))
+                    .Join())
+                .Then(_ => _.Item1 + _.Item2)
                 .End()
                 .Build("x + y = ?");
 

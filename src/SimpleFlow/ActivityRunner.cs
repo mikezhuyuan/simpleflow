@@ -70,18 +70,24 @@ namespace SimpleFlow.Core
             }
             else if (inputTypes.Length == 1)
             {
-                var input = _dataStore.Get(workItem.InputId.Value);
+                var arg = _dataStore.Get(workItem.InputId.Value);
+
+                if (inputTypes[0].IsTuple() && arg is object[]) // If output is array from parallel and input of continuation is Tuple
+                {
+                    var ctor = inputTypes[0].GetConstructors().Single();
+                    arg = ctor.Invoke((object[]) arg);
+                }
 
                 if (activityBlock.IsAsync)
                 {
-                    var task = (Task) activityBlock.Method.DynamicInvoke(input);
+                    var task = (Task)activityBlock.Method.DynamicInvoke(arg);
                     await task;
 
                     output = task.GetResult();
                 }
                 else
                 {
-                    output = activityBlock.Method.DynamicInvoke(input);
+                    output = activityBlock.Method.DynamicInvoke(arg);
                 }
             }
             else

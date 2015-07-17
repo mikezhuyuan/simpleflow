@@ -25,5 +25,10 @@ namespace SimpleFlow.Core
         {
             return type.IsArray ? type.GetElementType() : type.GetGenericArguments().Single();
         }
+
+        public static bool IsTuple(this Type type)
+        {
+            return type.FullName.StartsWith("System.Tuple`");
+        }
     }
 }

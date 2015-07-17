@@ -87,6 +87,20 @@ namespace SimpleFlow.Tests.Core
         }
 
         [Fact]
+        public async Task MethodWithTupleInputAndOutputFromPreviousStepIsArray()
+        {
+            Func<Tuple<int, string>, Tuple<int, string>> identity = _ => _;
+            var workItem = new WorkItem { JobId = Helpers.Integer(), InputId = Helpers.Integer() };
+            var activity = new ActivityBlock(identity);
+
+            _dataStore.Get(workItem.InputId.Value).Returns(new object[]{ 1, "a"});
+
+            await _activityRunner.RunCore(workItem, activity);
+
+            _dataStore.Received(1).Add(workItem.JobId, Tuple.Create(1, "a"), typeof(Tuple<int, string>));
+        }
+
+        [Fact]
         public async Task TestAsyncMethod()
         {
             Func<Task<int>> oneInFuture = () => Task.FromResult(1);
