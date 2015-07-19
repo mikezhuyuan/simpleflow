@@ -50,6 +50,7 @@
     <Compile Include="ActivityRunner.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="DataStore.cs" />
+    <Compile Include="ExceptionStateMachine.cs" />
     <Compile Include="ParallelStateMachine.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="InMemoryDataStore.cs" />

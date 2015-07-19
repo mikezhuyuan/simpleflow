@@ -237,6 +237,40 @@ namespace SimpleFlow.Tests.Core
                 output);
         }
 
+        [Fact]
+        public async Task TestExceptionHandling()
+        {
+            Func<int, int> divide = x => 1 / x;
+
+            var activity = new ActivityBlock(divide);
+            activity.ExceptionHandler = (Func<Exception, int>)(_ => -1);
+            var workflow = new Workflow<int, int>("test", activity);
+            var output = await WorkflowRunner.Run(workflow, 0);
+
+            Assert.Equal(-1, output);
+        }
+
+        [Fact]
+        public async Task TestExceptionPropagation()
+        {
+            Func<int, int> increment = x => x + 1;
+            Func<int, int> divide = x => 1 / x;
+
+            var a1 = new ActivityBlock(increment);
+            var a2 = new ActivityBlock(divide);
+
+            var seq = new SequenceBlock(new[] {new SequenceBlock(new[] {a1, a2})})
+            {
+                ExceptionHandler = (Func<Exception, int>) (_ => -1)
+            };
+
+            var workflow = new Workflow<int, int>("test", seq);
+
+            var output = await WorkflowRunner.Run(workflow, -1);
+
+            Assert.Equal(-1, output);
+        }
+
         class User
         {
             public int Id;

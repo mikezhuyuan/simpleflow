@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Core\ActivityRunnerTests.cs" />
     <Compile Include="Core\EngineTests.cs" />
+    <Compile Include="Core\ExceptionStateMachineTests.cs" />
     <Compile Include="Core\ForkStateMachineTests.cs" />
     <Compile Include="Fluent\CatchTests.cs" />
     <Compile Include="Helpers.cs" />

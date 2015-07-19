@@ -31,7 +31,10 @@ namespace SimpleFlow.Core
             if (workItem.ParentId == null)
                 return null;
 
-            return _dataStore.Values.Single(_ => _.Id == workItem.ParentId);
+            lock (_dataStore)
+            {
+                return _dataStore.Values.Single(_ => _.Id == workItem.ParentId);
+            }
         }
 
         public IEnumerable<int> LoadChildOutputIds(int parentId)

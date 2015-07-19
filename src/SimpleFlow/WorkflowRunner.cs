@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleFlow.Core
@@ -33,6 +34,12 @@ namespace SimpleFlow.Core
                     throw t.Exception.Flatten();
 
                 var wi = workItemRepo.Get(rootId);
+                if (wi.Status == WorkItemStatus.Failed)
+                {
+                    var ex = (Exception) dataStore.Get(wi.ExceptionId.Value);
+                    throw ex;
+                }
+
                 return dataStore.Get<TOutput>(wi.OutputId.Value);
             });
         }

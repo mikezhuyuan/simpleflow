@@ -27,6 +27,7 @@ namespace SimpleFlow.Core
         public int? InputId { get; set; }
         public int? OutputId { get; set; }
         public string WorkflowPath { get; set; }
+        public int? ExceptionId { get; set; }
 
         public object Clone()
         {

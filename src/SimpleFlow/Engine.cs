@@ -43,7 +43,7 @@ namespace SimpleFlow.Core
 
             _stateQueue.Completion.ContinueWith(t => { _workerQueue.Complete(); }, TaskContinuationOptions.OnlyOnFaulted);
 
-            _workerQueue.Completion.ContinueWith(t => { ((IDataflowBlock) _stateQueue).Fault(t.Exception); },
+            _workerQueue.Completion.ContinueWith(t => { ((IDataflowBlock)_stateQueue).Fault(t.Exception); },
                 TaskContinuationOptions.OnlyOnFaulted);
         }
 
@@ -57,7 +57,12 @@ namespace SimpleFlow.Core
                 return;
             }
 
-            if (workItem.Type == WorkflowType.Activity)
+            if (workItem.Status == WorkItemStatus.Failed)
+            {
+                //todo: if status is failed, publish event to highest priority queue and process it immediately.
+                _stateQueue.Post(workItem.Id);
+            }
+            else if (workItem.Type == WorkflowType.Activity)
             {
                 switch (workItem.Status)
                 {
@@ -97,11 +102,16 @@ namespace SimpleFlow.Core
 
             await _activityRunner.Run(workItem);
 
-            _repository.Update(workItem);
+            if (workItem.Status == WorkItemStatus.Failed)
+            {
+                Kick(workItem);
+            }
+            else
+            {
+                var parent = _repository.GetParent(workItem);
 
-            var parent = _repository.GetParent(workItem);
-
-            Kick(parent);
+                Kick(parent);
+            }
         }
     }
 }

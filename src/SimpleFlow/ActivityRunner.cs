@@ -46,19 +46,29 @@ namespace SimpleFlow.Core
             try
             {
                 await RunCore(workItem, activity);
+                workItem.Status = WorkItemStatus.Completed;
             }
             catch (Exception ex)
             {
-                if (definition.ExceptionHandler == null) // todo: set status to failed
-                    throw;
+                // todo: Here exception is thrown from dynamic invoke, the actual failure is inside InnerException, is that safe to lose context?
+                var actualException = ex.InnerException ?? ex; 
 
-                var output = definition.ExceptionHandler.DynamicInvoke(ex.InnerException);
-                    // todo: Here exception is thrown from dynamic invoke, the actual failure is inside InnerException, is that safe to lose context?
+                // todo: consider combine it with engine
+                if (definition.ExceptionHandler == null)
+                {
+                    workItem.ExceptionId = _dataStore.Add(workItem.JobId, actualException, actualException.GetType());
+                    workItem.Status = WorkItemStatus.Failed;
+                }
+                else
+                {
+                    var output = definition.ExceptionHandler.DynamicInvoke(actualException);
 
-                workItem.OutputId = _dataStore.Add(workItem.JobId, output, activity.OutputType);
+                    workItem.OutputId = _dataStore.Add(workItem.JobId, output, activity.OutputType);
+                    workItem.Status = WorkItemStatus.Completed;
+                }
             }
-
-            workItem.Status = WorkItemStatus.Completed;
+            
+            _repository.Update(workItem);
         }
 
         async Task RunCore(WorkItem workItem, ActivityBlock activityBlock)

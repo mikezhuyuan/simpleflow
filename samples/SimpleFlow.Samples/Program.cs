@@ -120,6 +120,28 @@ namespace SimpleFlow.Samples
             Console.WriteLine("success: {0}, result: {1}", r.Success, r.Result);
         }
 
+        static async Task Sample6()
+        {
+            var workflow = FluentFlow.Sequence<IEnumerable<string>>()
+                .Then(FluentFlow.Fork<IEnumerable<string>>(2)
+                    .ForEach(async _ =>
+                    {
+                        var i = int.Parse(_);
+                        await Task.FromResult(1 * 100);
+
+                        return i;
+                    })
+                    .Join())
+                .Then(_ => _.Sum())
+                .End()
+                .Catch(_ => -1)
+                .Build("sum");
+
+            var r = await WorkflowRunner.Run(workflow, new[]{"1", "~", "3", "4", "5"});
+
+            Console.WriteLine(r);
+        }
+
         static void Main(string[] args)
         {
             var all = new[]
@@ -128,7 +150,8 @@ namespace SimpleFlow.Samples
                 Sample2(),
                 Sample3(),
                 Sample4(),
-                Sample5()
+                Sample5(),
+                Sample6()
             };
 
             Task.WaitAll(all);
