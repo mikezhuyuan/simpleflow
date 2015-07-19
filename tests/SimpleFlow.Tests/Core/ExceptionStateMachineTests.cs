@@ -102,5 +102,35 @@ namespace SimpleFlow.Tests.Core
             Assert.Equal(child.ExceptionId, wi.ExceptionId);
             _engine.Kick(null);
         }
+
+        [Theory]
+        [InlineData(WorkItemStatus.Failed)]
+        [InlineData(WorkItemStatus.Completed)]
+        public void ShouldNotContinueIfParentIsFinalState(WorkItemStatus state)
+        {
+            var parent = new WorkItem
+            {
+                JobId = Helpers.Integer(),
+                WorkflowPath = "parent",
+                Status = state
+            };
+
+            var parentId = _workItemRepo.Add(parent);
+
+            var child = new WorkItem
+            {
+                ParentId = parentId,
+                WorkflowPath = "child",
+                Status = WorkItemStatus.Failed,
+                ExceptionId = Helpers.Integer()
+            };
+
+            _navigator.Find(parent.WorkflowPath).Returns(Helpers.BuildFork());
+
+            _dataStore.Add(parent.JobId, 1, typeof(int)).ReturnsForAnyArgs(1);
+            _stateMachine.Transit(child, _engine);
+
+            _engine.DidNotReceiveWithAnyArgs().Kick(null);
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace SimpleFlow.Core
     {
         Task Completion { get; }
         void Kick(WorkItem workItem);
+        void Rescure(WorkItem workItem);
     }
 
     class Engine : IEngine
@@ -57,12 +58,7 @@ namespace SimpleFlow.Core
                 return;
             }
 
-            if (workItem.Status == WorkItemStatus.Failed)
-            {
-                //todo: if status is failed, publish event to highest priority queue and process it immediately.
-                _stateQueue.Post(workItem.Id);
-            }
-            else if (workItem.Type == WorkflowType.Activity)
+            if (workItem.Type == WorkflowType.Activity)
             {
                 switch (workItem.Status)
                 {
@@ -80,6 +76,12 @@ namespace SimpleFlow.Core
             {
                 _stateQueue.Post(workItem.Id);
             }
+        }
+
+        public void Rescure(WorkItem workItem)
+        {
+            //todo: if status is failed, publish event to highest priority queue and process it immediately.
+            _stateQueue.Post(workItem.Id);
         }
 
         public Task Completion
@@ -104,7 +106,7 @@ namespace SimpleFlow.Core
 
             if (workItem.Status == WorkItemStatus.Failed)
             {
-                Kick(workItem);
+                Rescure(workItem);
             }
             else
             {

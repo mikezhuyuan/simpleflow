@@ -23,7 +23,7 @@
 
             while (current != null)
             {
-                if (current.Status != WorkItemStatus.Failed && current.Status != WorkItemStatus.Completed)
+                if (current.Status.IsFinal())
                     return;
 
                 if (TryRescure(current, exception, exceptionId))
