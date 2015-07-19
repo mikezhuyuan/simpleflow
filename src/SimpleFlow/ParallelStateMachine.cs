@@ -2,7 +2,7 @@
 
 namespace SimpleFlow.Core
 {
-    class ParallelStateMachine : IStateMachine //todo: combine with fork state machine
+    class ParallelStateMachine : IStateMachine //todo: add unit tests
     {
         readonly IDataStore _dataStore;
         readonly IWorkItemRepository _repository;

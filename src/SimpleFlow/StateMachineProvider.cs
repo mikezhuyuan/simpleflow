@@ -35,6 +35,8 @@ namespace SimpleFlow.Core
 
             switch (workItem.Type)
             {
+                case WorkflowType.Activity:
+                    return new ActivityStateMachine(_repository);
                 case WorkflowType.Fork:
                     return new ForkStateMachine(_repository, _workItemBuilder, _workflowPathNavigator, _dataStore);
                 case WorkflowType.Parallel:

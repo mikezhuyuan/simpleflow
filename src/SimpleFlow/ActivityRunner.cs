@@ -51,6 +51,7 @@ namespace SimpleFlow.Core
             catch (Exception ex)
             {
                 // todo: Here exception is thrown from dynamic invoke, the actual failure is inside InnerException, is that safe to lose context?
+                // todo: log original exception
                 var actualException = ex.InnerException ?? ex; 
 
                 // todo: consider combine it with engine

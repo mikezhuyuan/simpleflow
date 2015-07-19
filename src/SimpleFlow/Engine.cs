@@ -8,7 +8,8 @@ namespace SimpleFlow.Core
     {
         Task Completion { get; }
         void Kick(WorkItem workItem);
-        void Rescure(WorkItem workItem);
+        void Rescure(int workItemId);
+        void PostActivity(int workItemId);
     }
 
     class Engine : IEngine
@@ -58,30 +59,18 @@ namespace SimpleFlow.Core
                 return;
             }
 
-            if (workItem.Type == WorkflowType.Activity)
-            {
-                switch (workItem.Status)
-                {
-                    case WorkItemStatus.Created:
-                        workItem.Status = WorkItemStatus.Pending;
-                        _repository.Update(workItem);
-
-                        _workerQueue.Post(workItem.Id);
-                        break;
-                    default:
-                        throw new Exception("Unexpected activity status");
-                }
-            }
-            else
-            {
-                _stateQueue.Post(workItem.Id);
-            }
+            _stateQueue.Post(workItem.Id);
         }
 
-        public void Rescure(WorkItem workItem)
+        public void Rescure(int workItemId)
         {
             //todo: if status is failed, publish event to highest priority queue and process it immediately.
-            _stateQueue.Post(workItem.Id);
+            _stateQueue.Post(workItemId);
+        }
+
+        public void PostActivity(int workItemId)
+        {
+            _workerQueue.Post(workItemId);
         }
 
         public Task Completion
@@ -106,7 +95,7 @@ namespace SimpleFlow.Core
 
             if (workItem.Status == WorkItemStatus.Failed)
             {
-                Rescure(workItem);
+                Rescure(workItem.Id);
             }
             else
             {

@@ -18,22 +18,7 @@ namespace SimpleFlow.Tests.Core
             _stateMachineProvider = Substitute.For<IStateMachineProvider>();
             _engine = new Engine(_repository, _activityRunner, _stateMachineProvider);
         }
-
-        [Fact]
-        public async Task KickActivity()
-        {
-            var activity = new WorkItem(1, null, 0, WorkflowType.Activity, "root")
-            {
-                Status = WorkItemStatus.Created
-            };
-
-            _engine.Kick(activity);
-
-            await _engine.Completion;
-
-            _activityRunner.Received(1).Run(Arg.Is<WorkItem>(wi => wi.Id == activity.Id));
-        }
-
+        
         [Fact]
         public async Task KickGroupItem()
         {

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ActivityBlock.cs" />
     <Compile Include="ActivityRunner.cs" />
+    <Compile Include="ActivityStateMachine.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="DataStore.cs" />
     <Compile Include="ExceptionStateMachine.cs" />

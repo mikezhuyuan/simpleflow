@@ -12,7 +12,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             var r = FluentFlow
                 .Sequence<string>()
-                .Then(int.Parse) //todo: first action should be Do?
+                .Then(int.Parse)
                 .Then(_ => _.ToString())
                 .Then(int.Parse)
                 .End()
