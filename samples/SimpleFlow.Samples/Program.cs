@@ -165,6 +165,26 @@ namespace SimpleFlow.Samples
             Console.WriteLine(r);
         }
 
+        static async Task Sample8()
+        {
+            var rand = new Random();
+            var workflow = FluentFlow.Sequence<int>()
+                .Then(_ => Enumerable.Repeat(1, _))
+                .Then(FluentFlow.Fork<IEnumerable<int>>(int.MaxValue)
+                    .ForEach(async _ =>
+                    {
+                        await Task.Delay(rand.Next(1, 200));
+                        return 1;
+                    })
+                    .Join())
+                .Then(_ => _.Sum())
+                .End()
+                .Build("sum");
+
+            var r = await WorkflowRunner.Run(workflow, 1000);
+
+            Console.WriteLine(r);
+        }
 
         static void Main(string[] args)
         {
@@ -176,7 +196,8 @@ namespace SimpleFlow.Samples
                 //Sample4(),
                 //Sample5(),
                 //Sample6(),
-                Sample7()
+                //Sample7()
+                Sample8(),
             };
 
             Task.WaitAll(all);
