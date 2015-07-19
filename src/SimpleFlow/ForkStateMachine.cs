@@ -48,6 +48,9 @@ namespace SimpleFlow.Core
 
                     break;
                 case WorkItemStatus.WaitingForChildren:
+                    if (_repository.HasFailedChildren(workItem.Id))
+                        return;
+
                     var inProgress = _repository.CountInProgressChildren(workItem.Id);
                     var newWorkers = definition.MaxWorkers - inProgress;
 

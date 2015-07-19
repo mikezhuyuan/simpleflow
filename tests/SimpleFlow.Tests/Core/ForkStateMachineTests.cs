@@ -98,5 +98,21 @@ namespace SimpleFlow.Tests.Core
 
             _engine.Received(1).Kick(child);
         }
+
+        [Fact]
+        public void ShouldNotContinueIfHasAnyFailedChild()
+        {
+            var workItem = new WorkItem
+            {
+                Id = Helpers.Integer(),
+                Status = WorkItemStatus.WaitingForChildren,
+                Type = WorkflowType.Fork
+            };
+
+            _repository.HasFailedChildren(Arg.Any<int>()).Returns(true);
+            _stateMachine.Transit(workItem, _engine);
+
+            _engine.DidNotReceiveWithAnyArgs().Kick(null);
+        }
     }
 }

@@ -15,5 +15,6 @@ namespace SimpleFlow.Core
         WorkItem GetLastChildByOrder(int parentId);
         ICollection<WorkItem> FindRunnableChildrenByOrder(int parentId, int count);
         int CountInProgressChildren(int parentId);
+        bool HasFailedChildren(int parentId);
     }
 }

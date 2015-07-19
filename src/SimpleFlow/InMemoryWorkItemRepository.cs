@@ -139,5 +139,13 @@ namespace SimpleFlow.Core
                                 _.Status != WorkItemStatus.Completed);
             }
         }
+
+        public bool HasFailedChildren(int parentId)
+        {
+            lock (_dataStore)
+            {
+                return _dataStore.Values.Any(_ => _.ParentId == parentId && _.Status == WorkItemStatus.Failed);
+            }
+        }
     }
 }
