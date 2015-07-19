@@ -26,7 +26,7 @@ namespace SimpleFlow.Core
 
             var rootId = workItemRepo.Add(root);
 
-            engine.Kick(root);
+            engine.Kick(root.Id);
 
             return engine.Completion.ContinueWith(t =>
             {

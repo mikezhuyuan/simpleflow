@@ -36,7 +36,7 @@ namespace SimpleFlow.Tests.Core
             _repository.ReceivedWithAnyArgs(1).AddAll(null);
 
             Assert.Equal(WorkItemStatus.WaitingForChildren, workItem.Status);
-            _engine.Received(1).Kick(workItem);
+            _engine.Received(1).Kick(workItem.Id);
         }
 
         [Fact]
@@ -46,10 +46,9 @@ namespace SimpleFlow.Tests.Core
             {
                 Id = Helpers.Integer(),
                 Status = WorkItemStatus.WaitingForChildren,
-                Type = WorkflowType.Sequence
+                Type = WorkflowType.Sequence,
+                ParentId = Helpers.Integer()
             };
-
-            var parent = new WorkItem();
 
             var last = new WorkItem {OutputId = Helpers.Integer()};
             _repository.CountInProgressChildren(workItem.Id).Returns(0);
@@ -58,15 +57,13 @@ namespace SimpleFlow.Tests.Core
 
             _repository.GetLastChildByOrder(workItem.Id).Returns(last);
 
-            _repository.GetParent(workItem).Returns(parent);
-
             _stateMachine.Transit(workItem, _engine);
 
             _repository.Received(1).Update(workItem);
 
             Assert.Equal(WorkItemStatus.Completed, workItem.Status);
 
-            _engine.Received(1).Kick(parent);
+            _engine.Received(1).Kick(workItem.ParentId);
         }
 
         [Fact]
@@ -88,7 +85,7 @@ namespace SimpleFlow.Tests.Core
             _stateMachine.Transit(workItem, _engine);
 
             Assert.Equal(previous.OutputId, next.InputId);
-            _engine.Received(1).Kick(next);
+            _engine.Received(1).Kick(next.Id);
         }
 
         [Fact]

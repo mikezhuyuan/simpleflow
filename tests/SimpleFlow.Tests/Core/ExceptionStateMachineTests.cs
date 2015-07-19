@@ -56,7 +56,7 @@ namespace SimpleFlow.Tests.Core
             Assert.Equal(WorkItemStatus.Completed, parent.Status);
             Assert.Equal(1, parent.OutputId);
 
-            _engine.Kick(Arg.Is<WorkItem>(_ => _.Id == parentId));
+            _engine.Kick(parentId);
         }
 
         [Fact]

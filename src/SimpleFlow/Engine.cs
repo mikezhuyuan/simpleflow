@@ -7,7 +7,7 @@ namespace SimpleFlow.Core
     interface IEngine
     {
         Task Completion { get; }
-        void Kick(WorkItem workItem);
+        void Kick(int? workItemId);
         void Rescure(int workItemId);
         void PostActivity(int workItemId);
     }
@@ -49,9 +49,9 @@ namespace SimpleFlow.Core
                 TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        public void Kick(WorkItem workItem)
+        public void Kick(int? workItemId)
         {
-            if (workItem == null)
+            if (workItemId == null)
             {
                 _stateQueue.Complete();
                 _workerQueue.Complete();
@@ -59,7 +59,7 @@ namespace SimpleFlow.Core
                 return;
             }
 
-            _stateQueue.Post(workItem.Id);
+            _stateQueue.Post(workItemId.Value);
         }
 
         public void Rescure(int workItemId)
@@ -99,9 +99,7 @@ namespace SimpleFlow.Core
             }
             else
             {
-                var parent = _repository.GetParent(workItem);
-
-                Kick(parent);
+                Kick(workItem.ParentId);
             }
         }
     }

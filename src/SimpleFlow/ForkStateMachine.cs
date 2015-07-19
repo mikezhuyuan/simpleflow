@@ -44,7 +44,7 @@ namespace SimpleFlow.Core
                     workItem.Status = WorkItemStatus.WaitingForChildren;
                     _repository.Update(workItem);
 
-                    engine.Kick(workItem);
+                    engine.Kick(workItem.Id);
 
                     break;
                 case WorkItemStatus.WaitingForChildren:
@@ -61,7 +61,7 @@ namespace SimpleFlow.Core
                         {
                             foreach (var runnable in workItems)
                             {
-                                engine.Kick(runnable);
+                                engine.Kick(runnable.Id);
                             }
                         }
                         else if (inProgress == 0)
@@ -72,7 +72,7 @@ namespace SimpleFlow.Core
                             workItem.Status = WorkItemStatus.Completed;
                             _repository.Update(workItem);
 
-                            engine.Kick(_repository.GetParent(workItem));
+                            engine.Kick(workItem.ParentId);
                         }
                     }
 

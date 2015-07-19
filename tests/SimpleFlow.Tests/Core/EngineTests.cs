@@ -24,6 +24,7 @@ namespace SimpleFlow.Tests.Core
         {
             var sequence = new WorkItem(1, null, 0, WorkflowType.Sequence, "root")
             {
+				Id = Helpers.Integer(),
                 Status = WorkItemStatus.WaitingForChildren
             };
 
@@ -40,7 +41,7 @@ namespace SimpleFlow.Tests.Core
                 engine.Kick(null);
             }));
 
-            _engine.Kick(sequence);
+            _engine.Kick(sequence.Id);
 
             await _engine.Completion;
 

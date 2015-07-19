@@ -38,8 +38,7 @@
                 return;
             }
 
-            var parent = _repository.GetParent(current);
-            engine.Kick(parent);
+            engine.Kick(current.ParentId);
         }
 
         bool TryRescure(WorkItem workItem, object exception, int exceptionId)
