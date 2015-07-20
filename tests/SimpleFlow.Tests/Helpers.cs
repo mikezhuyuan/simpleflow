@@ -19,6 +19,11 @@ namespace SimpleFlow.Tests
             return new ForkBlock(BuildActivity(), maxWorkers);
         }
 
+        public static RetryBlock BuildRetry(int retryCount = 1)
+        {
+            return new RetryBlock(BuildActivity(), retryCount);
+        }
+
         public static int Integer()
         {
             return new Random().Next(0, 1000);

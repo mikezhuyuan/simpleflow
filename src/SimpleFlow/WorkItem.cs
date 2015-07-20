@@ -33,5 +33,17 @@ namespace SimpleFlow.Core
         {
             return (WorkItem) MemberwiseClone();
         }
+
+        public WorkItem Retry()
+        {
+            var newItem = (WorkItem)Clone();
+            newItem.Id = 0;
+            newItem.Status = WorkItemStatus.Created;
+            newItem.ExceptionId = null;
+            newItem.OutputId = null;
+            newItem.Order++;
+
+            return newItem;
+        }
     }
 }

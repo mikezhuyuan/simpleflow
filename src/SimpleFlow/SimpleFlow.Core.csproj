@@ -57,6 +57,8 @@
     <Compile Include="InMemoryDataStore.cs" />
     <Compile Include="InMemoryWorkItemRepository.cs" />
     <Compile Include="ParallelBlock.cs" />
+    <Compile Include="RetryBlock.cs" />
+    <Compile Include="RetryStateMachine.cs" />
     <Compile Include="StateMachineProvider.cs" />
     <Compile Include="WorkflowPathNavigator.cs" />
     <Compile Include="ForkBlock.cs" />

@@ -61,6 +61,7 @@
     <Compile Include="Core\EngineTests.cs" />
     <Compile Include="Core\ExceptionStateMachineTests.cs" />
     <Compile Include="Core\ForkStateMachineTests.cs" />
+    <Compile Include="Core\RetryStateMachineTests.cs" />
     <Compile Include="Fluent\CatchTests.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Core\InMemoryDataStoreTests.cs" />

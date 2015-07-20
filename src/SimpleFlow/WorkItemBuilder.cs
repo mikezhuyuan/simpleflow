@@ -34,6 +34,9 @@ namespace SimpleFlow.Core
             if (workItem.Type == WorkflowType.Parallel)
                 return BuildForPallaral(workItem);
 
+            if (workItem.Type == WorkflowType.Retry)
+                return BuildForRetry(workItem);
+
             throw new ArgumentException("workItem.Type not supported");
         }
 
@@ -80,6 +83,20 @@ namespace SimpleFlow.Core
                     }).ToArray();
 
             return children;
+        }
+
+        IEnumerable<WorkItem> BuildForRetry(WorkItem workItem)
+        {
+            var definition = (RetryBlock)_pathNavigator.Find(workItem.WorkflowPath);
+            var child = definition.Children.Single();
+
+            return new[]
+            {
+                new WorkItem(workItem.JobId, workItem.Id, 0, child.Type, _pathNavigator.Path(child))
+                {
+                    InputId = workItem.InputId
+                }
+            };
         }
     }
 }

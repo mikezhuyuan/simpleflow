@@ -5,6 +5,7 @@
         Activity,
         Sequence,
         Fork,
-        Parallel
+        Parallel,
+        Retry
     }
 }

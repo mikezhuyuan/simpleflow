@@ -43,6 +43,8 @@ namespace SimpleFlow.Core
                     return new ParallelStateMachine(_repository, _workItemBuilder, _workflowPathNavigator, _dataStore);
                 case WorkflowType.Sequence:
                     return new SequenceStateMachine(_repository, _workItemBuilder);
+                case WorkflowType.Retry:
+                    return new RetryStateMachine(_repository, _workItemBuilder, _workflowPathNavigator);
             }
 
             throw new ArgumentException("workItem type does not support: " + workItem.Type);
