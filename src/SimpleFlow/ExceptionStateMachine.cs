@@ -26,6 +26,12 @@
                 if (current.Status.IsFinal())
                     return;
 
+                if (current.Type == WorkflowType.Retry) //todo: add unit test
+                {
+                    engine.Kick(current.Id);
+                    return;
+                }
+
                 if (TryRescure(current, exception, exceptionId))
                     break;
 

@@ -41,7 +41,7 @@ namespace SimpleFlow.Core
                     break;
                 case WorkItemStatus.WaitingForChildren:
                     var last = _repository.GetLastChildByOrder(workItem.Id);
-                    var definition = (RetryBlock)_navigator.Find(last.WorkflowPath);
+                    var definition = (RetryBlock)_navigator.Find(workItem.WorkflowPath);
 
                     switch (last.Status)
                     {

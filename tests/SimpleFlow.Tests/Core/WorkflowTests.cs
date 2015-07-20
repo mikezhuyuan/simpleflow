@@ -271,6 +271,26 @@ namespace SimpleFlow.Tests.Core
             Assert.Equal(-1, output);
         }
 
+        [Fact]
+        public async Task TestRetry()
+        {
+            int i = 0;
+            Func<int, int> pow = x =>
+            {
+                if(i++ < 2)
+                    throw new Exception();
+
+                return x*x;
+            };
+
+            var w = new RetryBlock(new ActivityBlock(pow), 5);
+
+            var workflow = new Workflow<int, int>("test", w);
+            var output = await WorkflowRunner.Run(workflow, 2);
+
+            Assert.Equal(4, output);
+        }
+
         class User
         {
             public int Id;

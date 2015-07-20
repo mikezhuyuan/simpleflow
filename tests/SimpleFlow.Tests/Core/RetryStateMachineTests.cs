@@ -24,7 +24,7 @@ namespace SimpleFlow.Tests.Core
         [Fact]
         public void ShouldRetryIfChildFailed()
         {
-            var parent = new WorkItem(1, Helpers.Integer(), 0, WorkflowType.Activity, "parent")
+            var parent = new WorkItem(1, Helpers.Integer(), 0, WorkflowType.Activity, Helpers.String())
             {
                 Id = Helpers.Integer(),
                 Status = WorkItemStatus.WaitingForChildren,
@@ -38,7 +38,7 @@ namespace SimpleFlow.Tests.Core
 
             _repository.GetLastChildByOrder(parent.Id).Returns(child);
 
-            _workflowPathNavigator.Find("child").Returns(Helpers.BuildRetry(2));
+            _workflowPathNavigator.Find(parent.WorkflowPath).Returns(Helpers.BuildRetry(2));
 
             _stateMachine.Transit(parent, _engine);
 
@@ -49,14 +49,14 @@ namespace SimpleFlow.Tests.Core
         [Fact]
         public void ShouldThrowExceptionIfExceedsMaxRetryCount()
         {
-            var parent = new WorkItem(1, Helpers.Integer(), 0, WorkflowType.Activity, "parent")
+            var parent = new WorkItem(1, Helpers.Integer(), 0, WorkflowType.Activity, Helpers.String())
             {
                 Id = Helpers.Integer(),
                 Status = WorkItemStatus.WaitingForChildren,
                 Type = WorkflowType.Retry
             };
 
-            var child = new WorkItem(1, parent.Id, 2, WorkflowType.Activity, "child")
+            var child = new WorkItem(1, parent.Id, 2, WorkflowType.Activity, Helpers.String())
             {
                 Id = Helpers.Integer(),
                 Status = WorkItemStatus.Failed,
@@ -65,7 +65,7 @@ namespace SimpleFlow.Tests.Core
 
             _repository.GetLastChildByOrder(parent.Id).Returns(child);
 
-            _workflowPathNavigator.Find("child").Returns(Helpers.BuildRetry());
+            _workflowPathNavigator.Find(parent.WorkflowPath).Returns(Helpers.BuildRetry());
 
             _stateMachine.Transit(parent, _engine);
 
