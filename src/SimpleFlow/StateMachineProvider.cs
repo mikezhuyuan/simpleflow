@@ -30,7 +30,7 @@ namespace SimpleFlow.Core
         {
             if (workItem == null) throw new ArgumentNullException("workItem");
 
-            if(workItem.Status == WorkItemStatus.Failed)
+            if (workItem.Status == WorkItemStatus.Failed)
                 return new ExceptionStateMachine(_repository, _dataStore, _workflowPathNavigator);
 
             switch (workItem.Type)

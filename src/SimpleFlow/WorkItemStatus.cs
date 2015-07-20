@@ -7,7 +7,7 @@
         Running = 2,
         WaitingForChildren = 3,
         Completed = 4,
-        Failed = 5,
+        Failed = 5
     }
 
     static class WorkItemStatusExtensions

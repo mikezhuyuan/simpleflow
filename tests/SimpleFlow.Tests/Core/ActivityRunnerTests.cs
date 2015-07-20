@@ -44,7 +44,7 @@ namespace SimpleFlow.Tests.Core
             _workflowPathNavigator.Find(null).ReturnsForAnyArgs(activity);
 
             await _activityRunner.Run(workItem);
-            Assert.Equal(WorkItemStatus.Completed, workItem.Status);  
+            Assert.Equal(WorkItemStatus.Completed, workItem.Status);
             _repository.Received().Update(Arg.Is<WorkItem>(_ => _.Status == WorkItemStatus.Completed));
         }
 
@@ -59,7 +59,6 @@ namespace SimpleFlow.Tests.Core
 
             await _activityRunner.Run(workItem);
             Assert.True(invoked);
-            
         }
 
         [Fact]
@@ -73,7 +72,6 @@ namespace SimpleFlow.Tests.Core
             await _activityRunner.Run(workItem);
 
             _dataStore.Received(1).Add(workItem.JobId, 1, typeof (int));
-            
         }
 
         [Fact]
@@ -89,7 +87,6 @@ namespace SimpleFlow.Tests.Core
             await _activityRunner.Run(workItem);
 
             _dataStore.Received(1).Add(workItem.JobId, 2, typeof (int));
-            
         }
 
         [Fact]
@@ -105,7 +102,6 @@ namespace SimpleFlow.Tests.Core
             await _activityRunner.Run(workItem);
 
             _dataStore.Received(1).Add(workItem.JobId, 3, typeof (int));
-            
         }
 
         [Fact]
@@ -121,7 +117,6 @@ namespace SimpleFlow.Tests.Core
             await _activityRunner.Run(workItem);
 
             _dataStore.Received(1).Add(workItem.JobId, Tuple.Create(1, "a"), typeof (Tuple<int, string>));
-            
         }
 
         [Fact]
@@ -136,7 +131,6 @@ namespace SimpleFlow.Tests.Core
             await _activityRunner.Run(workItem);
 
             _dataStore.Received(1).Add(workItem.JobId, 1, typeof (int));
-            
         }
 
         [Fact]
@@ -170,9 +164,9 @@ namespace SimpleFlow.Tests.Core
         public async Task RecordsExceptionIfItHasNotDefinedHandler()
         {
             var divider = 0;
-            Func<int> divide = () => 1 / divider;
+            Func<int> divide = () => 1/divider;
 
-            var workItem = new WorkItem { JobId = Helpers.Integer() };
+            var workItem = new WorkItem {JobId = Helpers.Integer()};
             var activity = new ActivityBlock(divide);
 
             _workflowPathNavigator.Find(null).ReturnsForAnyArgs(activity);
@@ -181,7 +175,7 @@ namespace SimpleFlow.Tests.Core
 
             Assert.Equal(WorkItemStatus.Failed, workItem.Status);
 
-            _dataStore.Received(1).Add(workItem.JobId, Arg.Any<DivideByZeroException>(), typeof(DivideByZeroException));
+            _dataStore.Received(1).Add(workItem.JobId, Arg.Any<DivideByZeroException>(), typeof (DivideByZeroException));
             _repository.Received().Update(Arg.Is<WorkItem>(_ => _.Status == WorkItemStatus.Failed));
         }
     }

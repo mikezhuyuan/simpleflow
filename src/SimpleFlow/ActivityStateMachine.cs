@@ -1,7 +1,7 @@
 ﻿namespace SimpleFlow.Core
 {
     //todo: add unit tests
-    class ActivityStateMachine: IStateMachine
+    class ActivityStateMachine : IStateMachine
     {
         readonly IWorkItemRepository _repository;
 

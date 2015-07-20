@@ -6,11 +6,11 @@ namespace SimpleFlow.Tests.Core
 {
     public class RetryStateMachineTests //todo: add more unit tests to cover common paths
     {
-        readonly IWorkItemRepository _repository;
-        readonly IWorkItemBuilder _workItemBuilder;
-        readonly IWorkflowPathNavigator _workflowPathNavigator;
-        readonly RetryStateMachine _stateMachine;
         readonly IEngine _engine;
+        readonly IWorkItemRepository _repository;
+        readonly RetryStateMachine _stateMachine;
+        readonly IWorkflowPathNavigator _workflowPathNavigator;
+        readonly IWorkItemBuilder _workItemBuilder;
 
         public RetryStateMachineTests()
         {
@@ -69,7 +69,8 @@ namespace SimpleFlow.Tests.Core
 
             _stateMachine.Transit(parent, _engine);
 
-            _repository.Received(1).Update(Arg.Is<WorkItem>(_ => _.ExceptionId == child.ExceptionId && _.Status == WorkItemStatus.Failed));
+            _repository.Received(1)
+                .Update(Arg.Is<WorkItem>(_ => _.ExceptionId == child.ExceptionId && _.Status == WorkItemStatus.Failed));
             _engine.Received(1).Rescure(parent.Id);
         }
     }

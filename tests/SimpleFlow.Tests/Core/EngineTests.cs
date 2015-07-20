@@ -18,13 +18,13 @@ namespace SimpleFlow.Tests.Core
             _stateMachineProvider = Substitute.For<IStateMachineProvider>();
             _engine = new Engine(_repository, _activityRunner, _stateMachineProvider);
         }
-        
+
         [Fact]
         public async Task KickGroupItem()
         {
             var sequence = new WorkItem(1, null, 0, WorkflowType.Sequence, "root")
             {
-				Id = Helpers.Integer(),
+                Id = Helpers.Integer(),
                 Status = WorkItemStatus.WaitingForChildren
             };
 

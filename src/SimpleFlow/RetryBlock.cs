@@ -21,7 +21,7 @@ namespace SimpleFlow.Core
         public WorkflowBlock Child
         {
             get { return Children.Single(); }
-            set { Children = new[] { value }; }
+            set { Children = new[] {value}; }
         }
 
         public override WorkflowType Type

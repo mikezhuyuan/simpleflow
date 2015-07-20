@@ -11,7 +11,7 @@ namespace SimpleFlow.Core
         {
             lock (_dataStore)
             {
-                _dataStore[workItem.Id] = (WorkItem)workItem.Clone();
+                _dataStore[workItem.Id] = (WorkItem) workItem.Clone();
             }
         }
 
@@ -20,7 +20,7 @@ namespace SimpleFlow.Core
             lock (_dataStore)
             {
                 if (_dataStore.ContainsKey(id))
-                    return (WorkItem)_dataStore[id].Clone();
+                    return (WorkItem) _dataStore[id].Clone();
             }
 
             return null;
@@ -65,7 +65,7 @@ namespace SimpleFlow.Core
                 var maxId = _dataStore.Keys.Any() ? _dataStore.Keys.Max() : 0;
                 var id = maxId + 1;
                 workItem.Id = id;
-                _dataStore[id] = (WorkItem)workItem.Clone();
+                _dataStore[id] = (WorkItem) workItem.Clone();
 
                 return id;
             }
@@ -81,7 +81,7 @@ namespace SimpleFlow.Core
                 foreach (var workItem in workItems)
                 {
                     workItem.Id = id++;
-                    _dataStore[workItem.Id] = (WorkItem)workItem.Clone();
+                    _dataStore[workItem.Id] = (WorkItem) workItem.Clone();
                 }
             }
         }
@@ -97,7 +97,7 @@ namespace SimpleFlow.Core
             if (item == null)
                 return null;
 
-            return (WorkItem)item.Clone();
+            return (WorkItem) item.Clone();
         }
 
         public WorkItem GetLastChildByOrder(int parentId)
@@ -111,7 +111,7 @@ namespace SimpleFlow.Core
             if (item == null)
                 return null;
 
-            return (WorkItem)item.Clone();
+            return (WorkItem) item.Clone();
         }
 
         public ICollection<WorkItem> FindRunnableChildrenByOrder(int parentId, int count)
@@ -122,7 +122,7 @@ namespace SimpleFlow.Core
                     _dataStore.Values.Where(_ => _.ParentId == parentId && _.Status == WorkItemStatus.Created)
                         .OrderBy(_ => _.Order)
                         .Take(count)
-                        .Select(_ => (WorkItem)_.Clone())
+                        .Select(_ => (WorkItem) _.Clone())
                         .ToArray();
             }
         }
@@ -135,7 +135,9 @@ namespace SimpleFlow.Core
                     _dataStore.Values
                         .Count(
                             _ =>
-                                _.ParentId == parentId && (_.Status == WorkItemStatus.Running || _.Status == WorkItemStatus.Pending || _.Status == WorkItemStatus.WaitingForChildren));
+                                _.ParentId == parentId &&
+                                (_.Status == WorkItemStatus.Running || _.Status == WorkItemStatus.Pending ||
+                                 _.Status == WorkItemStatus.WaitingForChildren));
             }
         }
 

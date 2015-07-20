@@ -45,7 +45,7 @@ namespace SimpleFlow.Core
 
             _stateQueue.Completion.ContinueWith(t => { _workerQueue.Complete(); }, TaskContinuationOptions.OnlyOnFaulted);
 
-            _workerQueue.Completion.ContinueWith(t => { ((IDataflowBlock)_stateQueue).Fault(t.Exception); },
+            _workerQueue.Completion.ContinueWith(t => { ((IDataflowBlock) _stateQueue).Fault(t.Exception); },
                 TaskContinuationOptions.OnlyOnFaulted);
         }
 

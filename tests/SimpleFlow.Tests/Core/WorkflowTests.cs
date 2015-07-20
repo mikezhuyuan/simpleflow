@@ -240,10 +240,10 @@ namespace SimpleFlow.Tests.Core
         [Fact]
         public async Task TestExceptionHandling()
         {
-            Func<int, int> divide = x => 1 / x;
+            Func<int, int> divide = x => 1/x;
 
             var activity = new ActivityBlock(divide);
-            activity.ExceptionHandler = (Func<Exception, int>)(_ => -1);
+            activity.ExceptionHandler = (Func<Exception, int>) (_ => -1);
             var workflow = new Workflow<int, int>("test", activity);
             var output = await WorkflowRunner.Run(workflow, 0);
 
@@ -254,7 +254,7 @@ namespace SimpleFlow.Tests.Core
         public async Task TestExceptionPropagation()
         {
             Func<int, int> increment = x => x + 1;
-            Func<int, int> divide = x => 1 / x;
+            Func<int, int> divide = x => 1/x;
 
             var a1 = new ActivityBlock(increment);
             var a2 = new ActivityBlock(divide);
@@ -274,10 +274,10 @@ namespace SimpleFlow.Tests.Core
         [Fact]
         public async Task TestRetry()
         {
-            int i = 0;
+            var i = 0;
             Func<int, int> pow = x =>
             {
-                if(i++ < 2)
+                if (i++ < 2)
                     throw new Exception();
 
                 return x*x;

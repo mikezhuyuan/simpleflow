@@ -40,7 +40,7 @@ namespace SimpleFlow.Samples
                             .Do(int.Parse)
                             .Do(_ => _)
                             .Join())
-                        .Then(_ => new User { Id = _.Item1, Name = _.Item2 })
+                        .Then(_ => new User {Id = _.Item1, Name = _.Item2})
                         .End())
                     .Join())
                 .End()
@@ -99,7 +99,7 @@ namespace SimpleFlow.Samples
             var workflow = FluentFlow
                 .Sequence<string>()
                 .Then(int.Parse)
-                .Then(_ => new User { Id = 1, Name = "mike" })
+                .Then(_ => new User {Id = 1, Name = "mike"})
                 .End()
                 .Build("load a single user");
 
@@ -109,11 +109,11 @@ namespace SimpleFlow.Samples
 
         static async Task Sample5()
         {
-            Func<int, Response<int>> divide = i => new Response<int> { Result = i / i };
+            Func<int, Response<int>> divide = i => new Response<int> {Result = i/i};
 
             var workflow =
                 FluentFlow.Activity(divide)
-                    .Catch(ex => new Response<int> { Result = -1, Success = false })
+                    .Catch(ex => new Response<int> {Result = -1, Success = false})
                     .Build("divide");
 
             var r = await WorkflowRunner.Run(workflow, 0);
@@ -127,7 +127,7 @@ namespace SimpleFlow.Samples
                     .ForEach(async _ =>
                     {
                         var i = int.Parse(_);
-                        await Task.FromResult(1 * 100);
+                        await Task.FromResult(1*100);
 
                         return i;
                     })
@@ -137,7 +137,7 @@ namespace SimpleFlow.Samples
                 .Catch(_ => -1)
                 .Build("sum");
 
-            var r = await WorkflowRunner.Run(workflow, new[] { "1", "~", "3", "4", "5" });
+            var r = await WorkflowRunner.Run(workflow, new[] {"1", "~", "3", "4", "5"});
 
             Console.WriteLine(r);
         }
@@ -156,7 +156,7 @@ namespace SimpleFlow.Samples
                             return true;
                         }).Catch(_ => false))
                     .Join())
-                .Then(_ => _.Count(_1 => _1) / (double)_.Count())
+                .Then(_ => _.Count(_1 => _1)/(double) _.Count())
                 .End()
                 .Build("sum");
 
@@ -197,7 +197,7 @@ namespace SimpleFlow.Samples
                 //Sample5(),
                 //Sample6(),
                 //Sample7()
-                Sample8(),
+                Sample8()
             };
 
             Task.WaitAll(all);

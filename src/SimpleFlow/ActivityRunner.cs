@@ -52,7 +52,7 @@ namespace SimpleFlow.Core
             {
                 // todo: Here exception is thrown from dynamic invoke, the actual failure is inside InnerException, is that safe to lose context?
                 // todo: log original exception
-                var actualException = ex.InnerException ?? ex; 
+                var actualException = ex.InnerException ?? ex;
 
                 // todo: consider combine it with engine
                 if (definition.ExceptionHandler == null)
@@ -68,7 +68,7 @@ namespace SimpleFlow.Core
                     workItem.Status = WorkItemStatus.Completed;
                 }
             }
-            
+
             _repository.Update(workItem);
         }
 

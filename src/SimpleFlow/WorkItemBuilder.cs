@@ -87,7 +87,7 @@ namespace SimpleFlow.Core
 
         IEnumerable<WorkItem> BuildForRetry(WorkItem workItem)
         {
-            var definition = (RetryBlock)_pathNavigator.Find(workItem.WorkflowPath);
+            var definition = (RetryBlock) _pathNavigator.Find(workItem.WorkflowPath);
             var child = definition.Children.Single();
 
             return new[]

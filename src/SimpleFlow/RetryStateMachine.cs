@@ -4,11 +4,12 @@ namespace SimpleFlow.Core
 {
     class RetryStateMachine : IStateMachine
     {
+        readonly IWorkflowPathNavigator _navigator;
         readonly IWorkItemRepository _repository;
         readonly IWorkItemBuilder _workItemBuilder;
-        readonly IWorkflowPathNavigator _navigator;
 
-        public RetryStateMachine(IWorkItemRepository repository, IWorkItemBuilder workItemBuilder, IWorkflowPathNavigator navigator)
+        public RetryStateMachine(IWorkItemRepository repository, IWorkItemBuilder workItemBuilder,
+            IWorkflowPathNavigator navigator)
         {
             if (repository == null) throw new ArgumentNullException("repository");
             if (workItemBuilder == null) throw new ArgumentNullException("workItemBuilder");
@@ -41,7 +42,7 @@ namespace SimpleFlow.Core
                     break;
                 case WorkItemStatus.WaitingForChildren:
                     var last = _repository.GetLastChildByOrder(workItem.Id);
-                    var definition = (RetryBlock)_navigator.Find(workItem.WorkflowPath);
+                    var definition = (RetryBlock) _navigator.Find(workItem.WorkflowPath);
 
                     switch (last.Status)
                     {
@@ -51,7 +52,7 @@ namespace SimpleFlow.Core
                         case WorkItemStatus.Completed:
                             workItem.OutputId = last.OutputId;
                             workItem.Status = WorkItemStatus.Completed;
-                            
+
                             _repository.Update(workItem);
 
                             engine.Kick(workItem.ParentId);
@@ -62,16 +63,16 @@ namespace SimpleFlow.Core
                                 var newItem = last.Retry();
 
                                 _repository.Add(newItem);
-                                
+
                                 engine.Kick(newItem.Id);
                             }
                             else
                             {
                                 workItem.ExceptionId = last.ExceptionId;
                                 workItem.Status = WorkItemStatus.Failed;
-                                
+
                                 _repository.Update(workItem);
-                                
+
                                 engine.Rescure(workItem.Id);
                             }
                             break;

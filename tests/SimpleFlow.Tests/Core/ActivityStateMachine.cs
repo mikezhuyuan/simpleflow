@@ -17,7 +17,7 @@ namespace SimpleFlow.Tests.Core
             var workItem = new WorkItem
             {
                 Id = Helpers.Integer(),
-                Status = WorkItemStatus.Created,
+                Status = WorkItemStatus.Created
             };
 
             machine.Transit(workItem, engine);

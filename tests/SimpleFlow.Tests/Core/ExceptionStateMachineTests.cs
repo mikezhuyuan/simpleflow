@@ -7,11 +7,11 @@ namespace SimpleFlow.Tests.Core
 {
     public class ExceptionStateMachineTests
     {
-        ExceptionStateMachine _stateMachine;
-        InMemoryWorkItemRepository _workItemRepo;
-        IDataStore _dataStore;
-        IWorkflowPathNavigator _navigator;
-        IEngine _engine;
+        readonly IDataStore _dataStore;
+        readonly IEngine _engine;
+        readonly IWorkflowPathNavigator _navigator;
+        readonly ExceptionStateMachine _stateMachine;
+        readonly InMemoryWorkItemRepository _workItemRepo;
 
         public ExceptionStateMachineTests()
         {
@@ -48,11 +48,11 @@ namespace SimpleFlow.Tests.Core
 
             _navigator.Find(parent.WorkflowPath).Returns(definition);
 
-            _dataStore.Add(parent.JobId, 1, typeof(int)).ReturnsForAnyArgs(1);
+            _dataStore.Add(parent.JobId, 1, typeof (int)).ReturnsForAnyArgs(1);
             _stateMachine.Transit(child, _engine);
 
             parent = _workItemRepo.Get(parentId);
-            
+
             Assert.Equal(WorkItemStatus.Completed, parent.Status);
             Assert.Equal(1, parent.OutputId);
 
@@ -127,7 +127,7 @@ namespace SimpleFlow.Tests.Core
 
             _navigator.Find(parent.WorkflowPath).Returns(Helpers.BuildFork());
 
-            _dataStore.Add(parent.JobId, 1, typeof(int)).ReturnsForAnyArgs(1);
+            _dataStore.Add(parent.JobId, 1, typeof (int)).ReturnsForAnyArgs(1);
             _stateMachine.Transit(child, _engine);
 
             _engine.DidNotReceiveWithAnyArgs().Kick(null);

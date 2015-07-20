@@ -1,13 +1,14 @@
 ﻿namespace SimpleFlow.Core
 {
     //move to specific class, does't implement IStateMachine
-    class ExceptionStateMachine: IStateMachine
+    class ExceptionStateMachine : IStateMachine
     {
-        readonly IWorkItemRepository _repository;
         readonly IDataStore _dataStore;
         readonly IWorkflowPathNavigator _navigator;
+        readonly IWorkItemRepository _repository;
 
-        public ExceptionStateMachine(IWorkItemRepository repository, IDataStore dataStore, IWorkflowPathNavigator navigator)
+        public ExceptionStateMachine(IWorkItemRepository repository, IDataStore dataStore,
+            IWorkflowPathNavigator navigator)
         {
             _repository = repository;
             _dataStore = dataStore;
