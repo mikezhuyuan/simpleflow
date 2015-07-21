@@ -186,6 +186,22 @@ namespace SimpleFlow.Samples
             Console.WriteLine(r);
         }
 
+        static async Task Sample9()
+        {
+            var i = -1;
+            var workflow = FluentFlow.Activity<int, int>(x =>
+            {
+                if (i++ < x)
+                    throw new Exception();
+
+                return i;
+            }).Retry(5).Build("retry");
+
+            var r = await WorkflowRunner.Run(workflow, 1);
+
+            Console.WriteLine(r);
+        }
+
         static void Main(string[] args)
         {
             var all = new[]
@@ -197,7 +213,8 @@ namespace SimpleFlow.Samples
                 //Sample5(),
                 //Sample6(),
                 //Sample7()
-                Sample8()
+                //Sample8(),
+                Sample9()
             };
 
             Task.WaitAll(all);

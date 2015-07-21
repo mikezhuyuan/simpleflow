@@ -31,5 +31,13 @@ namespace SimpleFlow.Fluent
                 }
             };
         }
+
+        public Workflow<TInput, TOutput> Retry(int count = 1)
+        {
+            return new Workflow<TInput, TOutput>
+            {
+                BuildBlock = () => new RetryBlock(BuildBlock(), count)
+            };
+        }
     }
 }

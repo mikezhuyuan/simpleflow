@@ -5,7 +5,7 @@ namespace SimpleFlow.Core
 {
     public class RetryBlock : GroupBlock
     {
-        public RetryBlock(WorkflowBlock child, int retryCount)
+        public RetryBlock(WorkflowBlock child, int retryCount) //todo: support delay
         {
             if (child == null) throw new ArgumentNullException("child");
             if (retryCount < 1) throw new ArgumentException("retryCount cannot be less than 1");
