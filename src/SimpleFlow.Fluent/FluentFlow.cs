@@ -6,22 +6,22 @@ namespace SimpleFlow.Fluent
 {
     public static class FluentFlow //todo: fluent flow is a good candidate for the whole project
     {
-        public static SequenceThen<TInput, TInput> Sequence<TInput>()
+        public static SequenceBegin Sequence()
         {
-            return new SequenceThen<TInput, TInput>();
+            return new SequenceBegin();
         }
 
-        public static ParallelDo<TInput> Parallel<TInput>(int maxWorkers = 1)
+        public static ParallelDo Parallel(int maxWorkers = 1)
         {
-            return new ParallelDo<TInput>
+            return new ParallelDo
             {
                 MaxWorkers = maxWorkers
             };
         }
 
-        public static Fork<TInput> Fork<TInput>(int maxWorkers = 1)
+        public static Fork Fork(int maxWorkers = 1)
         {
-            return new Fork<TInput>
+            return new Fork
             {
                 MaxWorkers = maxWorkers
             };

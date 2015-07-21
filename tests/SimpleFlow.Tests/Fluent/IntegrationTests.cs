@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SimpleFlow.Fluent;
 using Xunit;
@@ -10,17 +11,19 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
-            var r = FluentFlow.Sequence<string>()
-                .Then(_ => _.Split(','))
-                .Then(FluentFlow.Fork<IEnumerable<string>>()
-                    .ForEach(FluentFlow.Sequence<string>()
-                        .Then(FluentFlow.Parallel<string>()
-                            .Do(int.Parse)
+            Func<string, string[]> split = _ => _.Split(',');
+            Func<string, int> parse = int.Parse;
+
+            var r = FluentFlow.Sequence()
+                .Begin(split)
+                .Then(FluentFlow.Fork()
+                    .ForEach(FluentFlow.Sequence()
+                        .Begin(FluentFlow.Parallel()
+                            .Do(parse)
                             .Do(_ => _)
                             .Join())
                         .Then(_ => new User {Id = _.Item1, Name = _.Item2})
-                        .End())
-                    .Join())
+                        .End()))
                 .End()
                 .BuildBlock();
 

@@ -5,54 +5,31 @@ using SimpleFlow.Core;
 
 namespace SimpleFlow.Fluent
 {
-    public class Fork<TInput>
+    public class Fork
     {
         internal int MaxWorkers;
-    }
 
-    public static class ForkExtension
-    {
-        public static ForkJoin<TInput, TOutput> ForEach<TInput, TOutput>(this Fork<IEnumerable<TInput>> source,
-            Func<TInput, TOutput> func)
-        {
-            return new ForkJoin<TInput, TOutput>
-            {
-                BuildBlock = () => new ActivityBlock(func),
-                MaxWorkers = source.MaxWorkers
-            };
-        }
-
-        public static ForkJoin<TInput, TOutput> ForEach<TInput, TOutput>(this Fork<IEnumerable<TInput>> source,
-            Func<TInput, Task<TOutput>> func)
-        {
-            return new ForkJoin<TInput, TOutput>
-            {
-                BuildBlock = () => new ActivityBlock(func),
-                MaxWorkers = source.MaxWorkers
-            };
-        }
-
-        public static ForkJoin<TInput, TOutput> ForEach<TInput, TOutput>(this Fork<IEnumerable<TInput>> source,
-            Workflow<TInput, TOutput> workflow)
-        {
-            return new ForkJoin<TInput, TOutput>
-            {
-                BuildBlock = () => workflow.BuildBlock(),
-                MaxWorkers = source.MaxWorkers
-            };
-        }
-    }
-
-    public class ForkJoin<TInput, TOutput>
-    {
-        internal int MaxWorkers;
-        internal Func<WorkflowBlock> BuildBlock { get; set; }
-
-        public Workflow<IEnumerable<TInput>, IEnumerable<TOutput>> Join()
+        public Workflow<IEnumerable<TInput>, IEnumerable<TOutput>> ForEach<TInput, TOutput>(Func<TInput, TOutput> func)
         {
             return new Workflow<IEnumerable<TInput>, IEnumerable<TOutput>>
             {
-                BuildBlock = () => new ForkBlock(BuildBlock(), MaxWorkers)
+                BuildBlock = () => new ForkBlock(new ActivityBlock(func), MaxWorkers)
+            };
+        }
+
+        public Workflow<IEnumerable<TInput>, IEnumerable<TOutput>> ForEach<TInput, TOutput>(Func<TInput, Task<TOutput>> func)
+        {
+            return new Workflow<IEnumerable<TInput>, IEnumerable<TOutput>>
+            {
+                BuildBlock = () => new ForkBlock(new ActivityBlock(func), MaxWorkers)
+            };
+        }
+
+        public Workflow<IEnumerable<TInput>, IEnumerable<TOutput>> ForEach<TInput, TOutput>(Workflow<TInput, TOutput> workflow)
+        {
+            return new Workflow<IEnumerable<TInput>, IEnumerable<TOutput>>
+            {
+                BuildBlock = () => new ForkBlock(workflow.BuildBlock(), MaxWorkers)
             };
         }
     }

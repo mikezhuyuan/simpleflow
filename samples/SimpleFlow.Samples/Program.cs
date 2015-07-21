@@ -28,21 +28,23 @@ namespace SimpleFlow.Samples
     {
         static async Task Sample1()
         {
+            Func<string, IEnumerable<string>> split = _ => _.Split(',');
+            Func<string, int> parse = int.Parse;
+
             var workflow = FluentFlow
-                .Sequence<string>()
-                .Then(_ => _.Split(','))
+                .Sequence()
+                .Begin(split)
                 .Then(FluentFlow
-                    .Fork<IEnumerable<string>>()
+                    .Fork()
                     .ForEach(FluentFlow
-                        .Sequence<string>()
-                        .Then(FluentFlow
-                            .Parallel<string>()
-                            .Do(int.Parse)
+                        .Sequence()
+                        .Begin(FluentFlow
+                            .Parallel()
+                            .Do(parse)
                             .Do(_ => _)
                             .Join())
                         .Then(_ => new User {Id = _.Item1, Name = _.Item2})
-                        .End())
-                    .Join())
+                        .End()))
                 .End()
                 .Build("load multiple users");
 
@@ -56,17 +58,19 @@ namespace SimpleFlow.Samples
 
         static async Task Sample2()
         {
+            Func<string, char[]> toChars = _ => _.ToCharArray();
+            Func<char, Task<int>> one = async _ =>
+            {
+                await Task.Delay(100);
+                return 1;
+            };
+
             var workflow = FluentFlow
-                .Sequence<string>()
-                .Then(_ => _.ToCharArray())
+                .Sequence()
+                .Begin(toChars)
                 .Then(FluentFlow
-                    .Fork<IEnumerable<char>>()
-                    .ForEach(async _ =>
-                    {
-                        await Task.Delay(100);
-                        return 1;
-                    })
-                    .Join())
+                    .Fork()
+                    .ForEach(one))
                 .Then(array => array.Count())
                 .End()
                 .Build("count string length");
@@ -77,14 +81,18 @@ namespace SimpleFlow.Samples
 
         static async Task Sample3()
         {
+            Func<string, string[]> split = _ => _.Split('+');
+            Func<IEnumerable<string>, int> parseFirst = _ => int.Parse(_.First());
+            Func<IEnumerable<string>, int> parseLast = _ => int.Parse(_.Last());
+
             var workflow = FluentFlow
-                .Sequence<string>()
-                .Then(_ => _.Split('+'))
+                .Sequence()
+                .Begin(split)
                 .Then(
                     FluentFlow
-                        .Parallel<IEnumerable<string>>(2)
-                        .Do(items => int.Parse(items.First()))
-                        .Do(items => int.Parse(items.Last()))
+                        .Parallel(2)
+                        .Do(parseFirst)
+                        .Do(parseLast)
                         .Join())
                 .Then(_ => _.Item1 + _.Item2)
                 .End()
@@ -96,9 +104,11 @@ namespace SimpleFlow.Samples
 
         static async Task Sample4()
         {
+            Func<string, int> parse = int.Parse;
+
             var workflow = FluentFlow
-                .Sequence<string>()
-                .Then(int.Parse)
+                .Sequence()
+                .Begin(parse)
                 .Then(_ => new User {Id = 1, Name = "mike"})
                 .End()
                 .Build("load a single user");
@@ -122,16 +132,11 @@ namespace SimpleFlow.Samples
 
         static async Task Sample6()
         {
-            var workflow = FluentFlow.Sequence<IEnumerable<string>>()
-                .Then(FluentFlow.Fork<IEnumerable<string>>(2)
-                    .ForEach(async _ =>
-                    {
-                        var i = int.Parse(_);
-                        await Task.FromResult(1*100);
+            Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
 
-                        return i;
-                    })
-                    .Join())
+            var workflow = FluentFlow.Sequence()
+                .Begin(FluentFlow.Fork(2)
+                    .ForEach(parseAsync))
                 .Then(_ => _.Sum())
                 .End()
                 .Catch(_ => -1)
@@ -145,17 +150,17 @@ namespace SimpleFlow.Samples
         static async Task Sample7()
         {
             var rand = new Random();
-            var workflow = FluentFlow.Sequence<IEnumerable<int>>()
-                .Then(FluentFlow.Fork<IEnumerable<int>>(5)
-                    .ForEach(FluentFlow.Activity<int, bool>(
-                        _ =>
-                        {
-                            if (rand.Next(0, 10) < 5)
-                                throw new Exception();
+            Func<int, bool> retry = _ =>
+            {
+                if (rand.Next(0, 10) < 5)
+                    throw new Exception();
 
-                            return true;
-                        }).Catch(_ => false))
-                    .Join())
+                return true;
+            };
+
+            var workflow = FluentFlow.Sequence()
+                .Begin(FluentFlow.Fork(5)
+                                .ForEach(FluentFlow.Activity(retry).Catch(_ => false)))
                 .Then(_ => _.Count(_1 => _1)/(double) _.Count())
                 .End()
                 .Build("sum");
@@ -168,15 +173,15 @@ namespace SimpleFlow.Samples
         static async Task Sample8()
         {
             var rand = new Random();
-            var workflow = FluentFlow.Sequence<int>()
-                .Then(_ => Enumerable.Repeat(1, _))
-                .Then(FluentFlow.Fork<IEnumerable<int>>(int.MaxValue)
-                    .ForEach(async _ =>
-                    {
-                        await Task.Delay(rand.Next(1, 200));
-                        return 1;
-                    })
-                    .Join())
+            Func<int, IEnumerable<int>> repeat = _ => Enumerable.Repeat(1, _);
+            Func<int, Task<int>> one = async _ =>
+            {
+                await Task.Delay(rand.Next(1, 200));
+                return 1;
+            };
+            var workflow = FluentFlow.Sequence()
+                .Begin(repeat)
+                .Then(FluentFlow.Fork(int.MaxValue).ForEach(one))
                 .Then(_ => _.Sum())
                 .End()
                 .Build("sum");
@@ -202,7 +207,7 @@ namespace SimpleFlow.Samples
             Console.WriteLine(r);
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             var all = new[]
             {
@@ -212,9 +217,9 @@ namespace SimpleFlow.Samples
                 //Sample4(),
                 //Sample5(),
                 //Sample6(),
-                //Sample7()
+                Sample7()
                 //Sample8(),
-                Sample9()
+                //Sample9()
             };
 
             Task.WaitAll(all);

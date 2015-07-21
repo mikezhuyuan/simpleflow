@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SimpleFlow.Fluent;
 using Xunit;
@@ -10,7 +11,9 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
-            var a = FluentFlow.Activity<string, int>(s => int.Parse(s)).BuildBlock();
+            Func<string, int> func = int.Parse;
+
+            var a = FluentFlow.Activity(func).BuildBlock();
 
             Assert.Equal(typeof (string), a.InputTypes.Single());
             Assert.Equal(typeof (int), a.OutputType);
@@ -21,7 +24,9 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestAsync()
         {
-            var a = FluentFlow.Activity<string, int>(s => Task.FromResult(int.Parse(s))).BuildBlock();
+            Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
+
+            var a = FluentFlow.Activity(parseAsync).BuildBlock();
 
             Assert.Equal(typeof (string), a.InputTypes.Single());
             Assert.Equal(typeof (int), a.OutputType);

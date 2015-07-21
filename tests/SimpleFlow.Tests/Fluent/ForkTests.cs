@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SimpleFlow.Core;
@@ -12,10 +13,11 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
+            Func<string, int> func = int.Parse;
+
             var f = FluentFlow
-                .Fork<IEnumerable<string>>(2)
-                .ForEach(int.Parse)
-                .Join();
+                .Fork(2)
+                .ForEach(func);
 
             var r = f.BuildBlock();
 
@@ -29,10 +31,11 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestAsync()
         {
+            Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
+            
             var f = FluentFlow
-                .Fork<IEnumerable<string>>(2)
-                .ForEach(Task.FromResult)
-                .Join();
+                .Fork(2)
+                .ForEach(parseAsync);
 
             var r = f.BuildBlock();
 
@@ -42,13 +45,13 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestNested()
         {
+            Func<string, int> parse = int.Parse;
+
             var f = FluentFlow
-                .Fork<IEnumerable<IEnumerable<string>>>()
+                .Fork()
                 .ForEach(FluentFlow
-                    .Fork<IEnumerable<string>>()
-                    .ForEach(int.Parse)
-                    .Join())
-                .Join();
+                    .Fork()
+                    .ForEach(parse));
 
             var r = f.BuildBlock();
 

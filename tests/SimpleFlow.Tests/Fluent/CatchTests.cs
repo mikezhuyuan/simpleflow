@@ -20,10 +20,12 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestSequence()
         {
+            Func<string, int> parse = int.Parse;
+
             var handler = Helpers.ExceptionHandler<int>();
             var r = FluentFlow
-                .Sequence<string>()
-                .Then(int.Parse)
+                .Sequence()
+                .Begin(parse)
                 .End()
                 .Catch(handler)
                 .BuildBlock();
@@ -34,11 +36,12 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestFork()
         {
+            Func<string, int> parse = int.Parse;
+
             var handler = Helpers.ExceptionHandler<IEnumerable<int>>();
             var r = FluentFlow
-                .Fork<IEnumerable<string>>(2)
-                .ForEach(int.Parse)
-                .Join()
+                .Fork(2)
+                .ForEach(parse)
                 .Catch(handler)
                 .BuildBlock();
 
@@ -48,10 +51,12 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestParallel()
         {
+            Func<int, string> toStr = _ => _.ToString();
+
             var handler = Helpers.ExceptionHandler<Tuple<string, string>>();
-            var r = FluentFlow.Parallel<int>(2)
-                .Do(_ => _.ToString())
-                .Do(_ => _.ToString())
+            var r = FluentFlow.Parallel(2)
+                .Do(toStr)
+                .Do(toStr)
                 .Join()
                 .Catch(handler)
                 .BuildBlock();

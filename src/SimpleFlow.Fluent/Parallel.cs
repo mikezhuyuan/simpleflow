@@ -6,7 +6,7 @@ using SimpleFlow.Core;
 
 namespace SimpleFlow.Fluent
 {
-    public abstract class ParallelDo
+    public class ParallelDo
     {
         internal Func<IEnumerable<WorkflowBlock>> BuildBlocks = () => Enumerable.Empty<WorkflowBlock>();
         internal int MaxWorkers = 1;
@@ -28,11 +28,8 @@ namespace SimpleFlow.Fluent
                 BuildBlock = () => new ParallelBlock(BuildBlocks(), MaxWorkers)
             };
         }
-    }
 
-    public class ParallelDo<TInput> : ParallelDo
-    {
-        public ParallelDo<TInput, TOutput> Do<TOutput>(Func<TInput, TOutput> func)
+        public ParallelDo<TInput, TOutput> Do<TInput, TOutput>(Func<TInput, TOutput> func)
         {
             return new ParallelDo<TInput, TOutput>
             {
@@ -41,7 +38,7 @@ namespace SimpleFlow.Fluent
             };
         }
 
-        public ParallelDo<TInput, TOutput> Do<TOutput>(Func<TInput, Task<TOutput>> func)
+        public ParallelDo<TInput, TOutput> Do<TInput, TOutput>(Func<TInput, Task<TOutput>> func)
         {
             return new ParallelDo<TInput, TOutput>
             {
@@ -50,7 +47,7 @@ namespace SimpleFlow.Fluent
             };
         }
 
-        public ParallelDo<TInput, TOutput> Do<TOutput>(Workflow<TInput, TOutput> workflow)
+        public ParallelDo<TInput, TOutput> Do<TInput, TOutput>(Workflow<TInput, TOutput> workflow)
         {
             return new ParallelDo<TInput, TOutput>
             {

@@ -6,9 +6,60 @@ using SimpleFlow.Core;
 
 namespace SimpleFlow.Fluent
 {
+    public class SequenceBegin
+    {
+        public SequenceThen<TInput, TOutput> Begin<TInput, TOutput>(Func<TInput, TOutput> func)
+        {
+            return new SequenceThen<TInput, TOutput>
+            {
+                BuildBlocks = () => new[] { new ActivityBlock(func) }
+            };
+        }
+
+        public SequenceThen<TInput, TOutput> Begin<TInput, TOutput>(Func<TInput, Task<TOutput>> func)
+        {
+            return new SequenceThen<TInput, TOutput>
+            {
+                BuildBlocks = () => new[] { new ActivityBlock(func) }
+            };
+        }
+
+        public SequenceThen<TInput, IEnumerable<TOutput>> Begin<TInput, TOutput>(Func<TInput, TOutput[]> func)
+        {
+            return new SequenceThen<TInput, IEnumerable<TOutput>>
+            {
+                BuildBlocks = () => new[] { new ActivityBlock(func) }
+            };
+        }
+
+        public SequenceThen<TInput, IEnumerable<TOutput>> Begin<TInput, TOutput>(Func<TInput, Task<TOutput[]>> func)
+        {
+            return new SequenceThen<TInput, IEnumerable<TOutput>>
+            {
+                BuildBlocks = () => new[] { new ActivityBlock(func) }
+            };
+        }
+
+        public SequenceThen<TInput, TOutput> Begin<TInput, TOutput>(Workflow<TInput, TOutput> workflow)
+        {
+            return new SequenceThen<TInput, TOutput>
+            {
+                BuildBlocks = () => new[] { workflow.BuildBlock() }
+            };
+        }
+
+        public SequenceThen<TInput, IEnumerable<TOutput>> Begin<TInput, TOutput>(Workflow<TInput, TOutput[]> workflow)
+        {
+            return new SequenceThen<TInput, IEnumerable<TOutput>>
+            {
+                BuildBlocks = () => new[] { workflow.BuildBlock() }
+            };
+        }
+    }
+
     public class SequenceThen<TInitialInput, TInput>
     {
-        internal Func<IEnumerable<WorkflowBlock>> BuildBlocks = () => Enumerable.Empty<WorkflowBlock>();
+        internal Func<IEnumerable<WorkflowBlock>> BuildBlocks;
 
         public SequenceThen<TInitialInput, TOutput> Then<TOutput>(Func<TInput, TOutput> func)
         {
@@ -27,11 +78,18 @@ namespace SimpleFlow.Fluent
         }
 
         public SequenceThen<TInitialInput, IEnumerable<TOutput>> Then<TOutput>(Func<TInput, TOutput[]> func)
-            //what's the better way of not having this override
         {
             return new SequenceThen<TInitialInput, IEnumerable<TOutput>>
             {
-                BuildBlocks = () => BuildBlocks().Union(new[] {new ActivityBlock(func)})
+                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
+            };
+        }
+
+        public SequenceThen<TInitialInput, IEnumerable<TOutput>> Then<TOutput>(Func<TInput, Task<TOutput[]>> func)
+        {
+            return new SequenceThen<TInitialInput, IEnumerable<TOutput>>
+            {
+                BuildBlocks = () => BuildBlocks().Union(new[] { new ActivityBlock(func) })
             };
         }
 
@@ -47,7 +105,7 @@ namespace SimpleFlow.Fluent
         {
             return new SequenceThen<TInitialInput, IEnumerable<TOutput>>
             {
-                BuildBlocks = () => BuildBlocks().Union(new[] {workflow.BuildBlock()})
+                BuildBlocks = () => BuildBlocks().Union(new[] { workflow.BuildBlock() })
             };
         }
 

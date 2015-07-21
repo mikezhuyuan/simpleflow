@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SimpleFlow.Fluent;
 using Xunit;
@@ -10,9 +11,10 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void Test()
         {
+            Func<string, int> parse = int.Parse;
             var r = FluentFlow
-                .Sequence<string>()
-                .Then(int.Parse)
+                .Sequence()
+                .Begin(parse)
                 .Then(_ => _.ToString())
                 .Then(int.Parse)
                 .End()
@@ -27,9 +29,10 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestAsync()
         {
+            Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
             var r = FluentFlow
-                .Sequence<string>()
-                .Then(Task.FromResult)
+                .Sequence()
+                .Begin(parseAsync)
                 .End()
                 .BuildBlock();
 
@@ -39,14 +42,16 @@ namespace SimpleFlow.Tests.Fluent
         [Fact]
         public void TestNested()
         {
+            Func<string, int> parse = int.Parse;
+
             var f1 = FluentFlow
-                .Sequence<string>()
-                .Then(int.Parse)
+                .Sequence()
+                .Begin(parse)
                 .End();
 
             var f2 = FluentFlow
-                .Sequence<string>()
-                .Then(f1)
+                .Sequence()
+                .Begin(f1)
                 .End();
 
             var r = f2.BuildBlock();
