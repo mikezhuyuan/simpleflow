@@ -13,7 +13,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, int> func = int.Parse;
 
-            var a = FluentFlow.Activity(func).BuildBlock();
+            var a = Flow.Activity(func).BuildBlock();
 
             Assert.Equal(typeof (string), a.InputTypes.Single());
             Assert.Equal(typeof (int), a.OutputType);
@@ -26,7 +26,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
 
-            var a = FluentFlow.Activity(parseAsync).BuildBlock();
+            var a = Flow.Activity(parseAsync).BuildBlock();
 
             Assert.Equal(typeof (string), a.InputTypes.Single());
             Assert.Equal(typeof (int), a.OutputType);

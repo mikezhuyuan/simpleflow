@@ -12,7 +12,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, int> func = int.Parse;
 
-            var a = FluentFlow.Activity(func).Retry().BuildBlock();
+            var a = Flow.Activity(func).Retry().BuildBlock();
 
             Assert.Equal(typeof(string), a.InputTypes.Single());
             Assert.Equal(typeof(int), a.OutputType);

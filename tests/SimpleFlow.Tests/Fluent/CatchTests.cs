@@ -12,7 +12,7 @@ namespace SimpleFlow.Tests.Fluent
         public void TestActivity()
         {
             var handler = Helpers.ExceptionHandler<int>();
-            var r = FluentFlow.Activity<string, int>(s => Task.FromResult(int.Parse(s))).Catch(handler).BuildBlock();
+            var r = Flow.Activity<string, int>(s => Task.FromResult(int.Parse(s))).Catch(handler).BuildBlock();
 
             Assert.Equal(handler, r.ExceptionHandler);
         }
@@ -23,7 +23,7 @@ namespace SimpleFlow.Tests.Fluent
             Func<string, int> parse = int.Parse;
 
             var handler = Helpers.ExceptionHandler<int>();
-            var r = FluentFlow
+            var r = Flow
                 .Sequence()
                 .Begin(parse)
                 .End()
@@ -39,7 +39,7 @@ namespace SimpleFlow.Tests.Fluent
             Func<string, int> parse = int.Parse;
 
             var handler = Helpers.ExceptionHandler<IEnumerable<int>>();
-            var r = FluentFlow
+            var r = Flow
                 .Fork(2)
                 .ForEach(parse)
                 .Catch(handler)
@@ -54,7 +54,7 @@ namespace SimpleFlow.Tests.Fluent
             Func<int, string> toStr = _ => _.ToString();
 
             var handler = Helpers.ExceptionHandler<Tuple<string, string>>();
-            var r = FluentFlow.Parallel(2)
+            var r = Flow.Parallel(2)
                 .Do(toStr)
                 .Do(toStr)
                 .Join()

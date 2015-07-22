@@ -12,7 +12,7 @@ namespace SimpleFlow.Tests.Fluent
         public void Test()
         {
             Func<string, int> parse = int.Parse;
-            var r = FluentFlow
+            var r = Flow
                 .Sequence()
                 .Begin(parse)
                 .Then(_ => _.ToString())
@@ -30,7 +30,7 @@ namespace SimpleFlow.Tests.Fluent
         public void TestAsync()
         {
             Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
-            var r = FluentFlow
+            var r = Flow
                 .Sequence()
                 .Begin(parseAsync)
                 .End()
@@ -44,12 +44,12 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, int> parse = int.Parse;
 
-            var f1 = FluentFlow
+            var f1 = Flow
                 .Sequence()
                 .Begin(parse)
                 .End();
 
-            var f2 = FluentFlow
+            var f2 = Flow
                 .Sequence()
                 .Begin(f1)
                 .End();

@@ -4,7 +4,7 @@ using SimpleFlow.Core;
 
 namespace SimpleFlow.Fluent
 {
-    public static class FluentFlow //todo: fluent flow is a good candidate for the whole project
+    public static class Flow
     {
         public static SequenceBegin Sequence()
         {

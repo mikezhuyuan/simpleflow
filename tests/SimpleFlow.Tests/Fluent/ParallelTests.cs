@@ -15,7 +15,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<int, string> toStr = _ => _.ToString();
 
-            var f = FluentFlow.Parallel(2)
+            var f = Flow.Parallel(2)
                 .Do(toStr)
                 .Do(_ => _.ToString())
                 .Join();
@@ -34,7 +34,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
 
-            var f = FluentFlow.Parallel(2)
+            var f = Flow.Parallel(2)
                 .Do(parseAsync)
                 .Do(parseAsync)
                 .Join();
@@ -49,15 +49,15 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
 
-            var f = FluentFlow.Parallel()
+            var f = Flow.Parallel()
                 .Do(
-                    FluentFlow.Parallel()
+                    Flow.Parallel()
                         .Do(parseAsync)
                         .Do(parseAsync)
                         .Join()
                 )
                 .Do(
-                    FluentFlow.Parallel()
+                    Flow.Parallel()
                         .Do(parseAsync)
                         .Do(parseAsync)
                         .Join()
@@ -77,7 +77,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<int, string> toStr = _ => _.ToString();
 
-            var r = FluentFlow.Parallel(2)
+            var r = Flow.Parallel(2)
                 .Do(toStr)
                 .Do(toStr)
                 .Do(Task.FromResult)
@@ -86,7 +86,7 @@ namespace SimpleFlow.Tests.Fluent
             Assert.Equal(2, GetMaxWorkers(r));
             Assert.Equal("Parallel(Activity,Activity,Activity)", r.ToString());
 
-            r = FluentFlow.Parallel(2)
+            r = Flow.Parallel(2)
                 .Do(toStr)
                 .Do(toStr)
                 .Do(toStr)
@@ -96,7 +96,7 @@ namespace SimpleFlow.Tests.Fluent
             Assert.Equal(2, GetMaxWorkers(r));
             Assert.Equal("Parallel(Activity,Activity,Activity,Activity)", r.ToString());
 
-            r = FluentFlow.Parallel(2)
+            r = Flow.Parallel(2)
                 .Do(toStr)
                 .Do(toStr)
                 .Do(toStr)

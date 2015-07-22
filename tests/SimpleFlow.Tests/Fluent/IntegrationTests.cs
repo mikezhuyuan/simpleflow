@@ -14,11 +14,11 @@ namespace SimpleFlow.Tests.Fluent
             Func<string, string[]> split = _ => _.Split(',');
             Func<string, int> parse = int.Parse;
 
-            var r = FluentFlow.Sequence()
+            var r = Flow.Sequence()
                 .Begin(split)
-                .Then(FluentFlow.Fork()
-                    .ForEach(FluentFlow.Sequence()
-                        .Begin(FluentFlow.Parallel()
+                .Then(Flow.Fork()
+                    .ForEach(Flow.Sequence()
+                        .Begin(Flow.Parallel()
                             .Do(parse)
                             .Do(_ => _)
                             .Join())

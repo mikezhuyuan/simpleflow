@@ -31,14 +31,14 @@ namespace SimpleFlow.Samples
             Func<string, IEnumerable<string>> split = _ => _.Split(',');
             Func<string, int> parse = int.Parse;
 
-            var workflow = FluentFlow
+            var workflow = Flow
                 .Sequence()
                 .Begin(split)
-                .Then(FluentFlow
+                .Then(Flow
                     .Fork()
-                    .ForEach(FluentFlow
+                    .ForEach(Flow
                         .Sequence()
-                        .Begin(FluentFlow
+                        .Begin(Flow
                             .Parallel()
                             .Do(parse)
                             .Do(_ => _)
@@ -65,12 +65,11 @@ namespace SimpleFlow.Samples
                 return 1;
             };
 
-            var workflow = FluentFlow
+            var workflow = Flow
                 .Sequence()
                 .Begin(toChars)
-                .Then(FluentFlow
-                    .Fork()
-                    .ForEach(one))
+                .Then(Flow.Fork()
+                                .ForEach(one))
                 .Then(array => array.Count())
                 .End()
                 .Build("count string length");
@@ -85,11 +84,11 @@ namespace SimpleFlow.Samples
             Func<IEnumerable<string>, int> parseFirst = _ => int.Parse(_.First());
             Func<IEnumerable<string>, int> parseLast = _ => int.Parse(_.Last());
 
-            var workflow = FluentFlow
+            var workflow = Flow
                 .Sequence()
                 .Begin(split)
                 .Then(
-                    FluentFlow
+                    Flow
                         .Parallel(2)
                         .Do(parseFirst)
                         .Do(parseLast)
@@ -106,7 +105,7 @@ namespace SimpleFlow.Samples
         {
             Func<string, int> parse = int.Parse;
 
-            var workflow = FluentFlow
+            var workflow = Flow
                 .Sequence()
                 .Begin(parse)
                 .Then(_ => new User {Id = 1, Name = "mike"})
@@ -122,7 +121,7 @@ namespace SimpleFlow.Samples
             Func<int, Response<int>> divide = i => new Response<int> {Result = i/i};
 
             var workflow =
-                FluentFlow.Activity(divide)
+                Flow.Activity(divide)
                     .Catch(ex => new Response<int> {Result = -1, Success = false})
                     .Build("divide");
 
@@ -134,9 +133,9 @@ namespace SimpleFlow.Samples
         {
             Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
 
-            var workflow = FluentFlow.Sequence()
-                .Begin(FluentFlow.Fork(2)
-                    .ForEach(parseAsync))
+            var workflow = Flow.Sequence()
+                .Begin(Flow.Fork(2)
+                                 .ForEach(parseAsync))
                 .Then(_ => _.Sum())
                 .End()
                 .Catch(_ => -1)
@@ -158,9 +157,9 @@ namespace SimpleFlow.Samples
                 return true;
             };
 
-            var workflow = FluentFlow.Sequence()
-                .Begin(FluentFlow.Fork(5)
-                                .ForEach(FluentFlow.Activity(retry).Catch(_ => false)))
+            var workflow = Flow.Sequence()
+                .Begin(Flow.Fork(5)
+                                 .ForEach(Flow.Activity(retry).Catch(_ => false)))
                 .Then(_ => _.Count(_1 => _1)/(double) _.Count())
                 .End()
                 .Build("sum");
@@ -179,9 +178,9 @@ namespace SimpleFlow.Samples
                 await Task.Delay(rand.Next(1, 200));
                 return 1;
             };
-            var workflow = FluentFlow.Sequence()
+            var workflow = Flow.Sequence()
                 .Begin(repeat)
-                .Then(FluentFlow.Fork(int.MaxValue).ForEach(one))
+                .Then(Flow.Fork(int.MaxValue).ForEach(one))
                 .Then(_ => _.Sum())
                 .End()
                 .Build("sum");
@@ -194,7 +193,7 @@ namespace SimpleFlow.Samples
         static async Task Sample9()
         {
             var i = -1;
-            var workflow = FluentFlow.Activity<int, int>(x =>
+            var workflow = Flow.Activity<int, int>(x =>
             {
                 if (i++ < x)
                     throw new Exception();

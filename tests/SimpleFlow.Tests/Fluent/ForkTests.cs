@@ -15,7 +15,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, int> func = int.Parse;
 
-            var f = FluentFlow
+            var f = Flow
                 .Fork(2)
                 .ForEach(func);
 
@@ -33,7 +33,7 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, Task<int>> parseAsync = _ => Task.FromResult(int.Parse(_));
             
-            var f = FluentFlow
+            var f = Flow
                 .Fork(2)
                 .ForEach(parseAsync);
 
@@ -47,9 +47,9 @@ namespace SimpleFlow.Tests.Fluent
         {
             Func<string, int> parse = int.Parse;
 
-            var f = FluentFlow
+            var f = Flow
                 .Fork()
-                .ForEach(FluentFlow
+                .ForEach(Flow
                     .Fork()
                     .ForEach(parse));
 
